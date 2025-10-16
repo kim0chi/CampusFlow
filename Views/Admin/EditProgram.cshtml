@@ -1,0 +1,74 @@
+@model StudentEnrollmentSystem.Models.Program
+@{
+    ViewData["Title"] = "Edit Program";
+    var departments = ViewBag.Departments as List<StudentEnrollmentSystem.Models.Department>;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2>Edit Program</h2>
+        <hr />
+
+        <form asp-action="EditProgram" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Program Name <span class="text-danger">*</span></label>
+                <input type="text" name="name" class="form-control" required value="@Model.Name" placeholder="e.g., Bachelor of Science in Computer Science" />
+                <small class="text-muted">Enter the full program name</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                <select name="departmentId" class="form-select" required>
+                    <option value="">Select Department...</option>
+                    @if (departments != null)
+                    {
+                        foreach (var dept in departments)
+                        {
+                            <option value="@dept.Id" selected="@(Model.DepartmentId == dept.Id)">@dept.Name (@dept.Code)</option>
+                        }
+                    }
+                </select>
+                <small class="text-muted">Select the department that manages this program</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Optional description of the program...">@Model.Description</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="totalCreditsRequired" class="form-label">Total Credits Required <span class="text-danger">*</span></label>
+                <input type="number" name="totalCreditsRequired" class="form-control" required min="30" max="300" value="@Model.TotalCreditsRequired" />
+                <small class="text-muted">Total credits needed to complete this program (typically 120-150)</small>
+            </div>
+
+            <div class="mb-3">
+                <div class="alert alert-info">
+                    <strong><i class="bi bi-info-circle"></i> Status:</strong>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                    <br />
+                    <small>To change the status, use the Activate/Deactivate button on the Programs list.</small>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="ManagePrograms" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

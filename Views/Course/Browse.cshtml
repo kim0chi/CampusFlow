@@ -1,0 +1,226 @@
+@model List<StudentEnrollmentSystem.Models.Course>
+@{
+    ViewData["Title"] = "Browse Courses";
+}
+
+<h2>Browse Available Courses</h2>
+<hr />
+
+@if (Model.Any())
+{
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" id="courseSearch" class="form-control" placeholder="Search by course code, name, or department...">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select id="sortBy" class="form-select">
+                <option value="default">Sort by: Default (Department)</option>
+                <option value="code">Sort by: Course Code</option>
+                <option value="name">Sort by: Course Name</option>
+                <option value="credits">Sort by: Credits</option>
+                <option value="capacity">Sort by: Capacity</option>
+                <option value="availability">Sort by: Availability</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button id="clearFilters" class="btn btn-outline-secondary w-100">Clear Filters</button>
+        </div>
+    </div>
+
+    <div id="noResults" class="alert alert-warning" style="display: none;">
+        No courses match your search criteria.
+    </div>
+
+    var coursesByDepartment = Model.GroupBy(c => c.Department);
+
+    @foreach (var departmentGroup in coursesByDepartment)
+    {
+        <div class="card mb-3 department-group" data-department="@departmentGroup.Key">
+            <div class="card-header">
+                <h4>@departmentGroup.Key</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Name</th>
+                                <th>Credits</th>
+                                <th>Semester</th>
+                                <th>Capacity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in departmentGroup)
+                            {
+                                <tr class="course-row"
+                                    data-course-code="@course.CourseCode.ToLower()"
+                                    data-course-name="@course.Name.ToLower()"
+                                    data-department="@course.Department.ToLower()"
+                                    data-credits="@course.Credits"
+                                    data-capacity="@course.Capacity"
+                                    data-enrolled="@course.EnrolledCount"
+                                    data-availability="@(course.Capacity - course.EnrolledCount)">
+                                    <td><strong>@course.CourseCode</strong></td>
+                                    <td>@course.Name</td>
+                                    <td>@course.Credits</td>
+                                    <td>@course.Semester</td>
+                                    <td>
+                                        @course.EnrolledCount / @course.Capacity
+                                        @if (course.EnrolledCount >= course.Capacity)
+                                        {
+                                            <span class="badge bg-danger">Full</span>
+                                        }
+                                        else if (course.EnrolledCount >= course.Capacity * 0.8)
+                                        {
+                                            <span class="badge bg-warning">Almost Full</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (User.IsInRole("Student"))
+                                        {
+                                            @if (course.EnrolledCount < course.Capacity)
+                                            {
+                                                <a asp-controller="Enrollment" asp-action="Create" asp-route-id="@course.Id" class="btn btn-sm btn-primary">Enroll</a>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-secondary" disabled>Full</button>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info">
+        <p>No courses available at this time.</p>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const searchInput = $('#courseSearch');
+            const sortSelect = $('#sortBy');
+            const clearButton = $('#clearFilters');
+            const noResults = $('#noResults');
+
+            function filterAndSortCourses() {
+                const searchTerm = searchInput.val().toLowerCase();
+                const sortBy = sortSelect.val();
+                let visibleCount = 0;
+
+                // First, handle search filtering
+                $('.course-row').each(function() {
+                    const courseCode = $(this).data('course-code');
+                    const courseName = $(this).data('course-name');
+                    const department = $(this).data('department');
+
+                    const matches = courseCode.includes(searchTerm) ||
+                                  courseName.includes(searchTerm) ||
+                                  department.includes(searchTerm);
+
+                    $(this).toggle(matches);
+                    if (matches) visibleCount++;
+                });
+
+                // Hide/show department groups based on visible courses
+                $('.department-group').each(function() {
+                    const visibleRows = $(this).find('.course-row:visible').length;
+                    $(this).toggle(visibleRows > 0);
+                });
+
+                // Show/hide no results message
+                noResults.toggle(visibleCount === 0);
+
+                // Handle sorting
+                if (sortBy !== 'default') {
+                    sortCourses(sortBy);
+                }
+            }
+
+            function sortCourses(sortBy) {
+                // Collect all visible course rows
+                const allRows = [];
+                $('.course-row:visible').each(function() {
+                    allRows.push($(this).clone(true));
+                });
+
+                // Sort the rows
+                allRows.sort(function(a, b) {
+                    switch(sortBy) {
+                        case 'code':
+                            return a.data('course-code').localeCompare(b.data('course-code'));
+                        case 'name':
+                            return a.data('course-name').localeCompare(b.data('course-name'));
+                        case 'credits':
+                            return b.data('credits') - a.data('credits');
+                        case 'capacity':
+                            return b.data('capacity') - a.data('capacity');
+                        case 'availability':
+                            return b.data('availability') - a.data('availability');
+                        default:
+                            return 0;
+                    }
+                });
+
+                // Clear existing tables and create a single sorted table
+                if (allRows.length > 0) {
+                    // Hide all department groups
+                    $('.department-group').hide();
+
+                    // Create or update the sorted view
+                    let sortedContainer = $('#sortedContainer');
+                    if (sortedContainer.length === 0) {
+                        sortedContainer = $('<div id="sortedContainer" class="card mb-3"><div class="card-header"><h4>All Courses (Sorted)</h4></div><div class="card-body"><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Course Code</th><th>Name</th><th>Credits</th><th>Semester</th><th>Capacity</th><th>Actions</th></tr></thead><tbody id="sortedTableBody"></tbody></table></div></div></div>');
+                        $('.department-group').first().before(sortedContainer);
+                    }
+
+                    const tbody = $('#sortedTableBody');
+                    tbody.empty();
+                    allRows.forEach(row => tbody.append(row));
+                    sortedContainer.show();
+                }
+            }
+
+            function resetView() {
+                $('#sortedContainer').remove();
+                $('.department-group').show();
+                $('.course-row').show();
+                noResults.hide();
+            }
+
+            searchInput.on('keyup', filterAndSortCourses);
+
+            sortSelect.on('change', function() {
+                if ($(this).val() === 'default') {
+                    resetView();
+                    if (searchInput.val()) {
+                        filterAndSortCourses();
+                    }
+                } else {
+                    filterAndSortCourses();
+                }
+            });
+
+            clearButton.on('click', function() {
+                searchInput.val('');
+                sortSelect.val('default');
+                resetView();
+            });
+        });
+    </script>
+}

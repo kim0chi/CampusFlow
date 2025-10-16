@@ -1,0 +1,339 @@
+@model StudentEnrollmentSystem.Models.ViewModels.BulkEnrollmentViewModel
+@{
+    ViewData["Title"] = "Enroll in Courses";
+    var completedCourseIds = ViewBag.CompletedCourseIds as List<int> ?? new List<int>();
+    var studentYearLevel = ViewBag.StudentYearLevel as string;
+
+    bool IsYearLevelSufficient(string requiredLevel)
+    {
+        if (string.IsNullOrEmpty(studentYearLevel) || string.IsNullOrEmpty(requiredLevel))
+        {
+            return string.IsNullOrEmpty(requiredLevel);
+        }
+
+        var hierarchy = new Dictionary<string, int>
+        {
+            { "Freshman", 1 },
+            { "Sophomore", 2 },
+            { "Junior", 3 },
+            { "Senior", 4 },
+            { "Graduate", 5 }
+        };
+
+        return hierarchy.ContainsKey(studentYearLevel) && hierarchy.ContainsKey(requiredLevel)
+            && hierarchy[studentYearLevel] >= hierarchy[requiredLevel];
+    }
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-plus-circle"></i> Enroll in Courses (Bulk Enrollment)</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to My Enrollments
+    </a>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        @if (string.IsNullOrEmpty(studentYearLevel))
+        {
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i> <strong>Notice:</strong> Your year level is not set. Please update your profile to ensure eligibility for courses with year restrictions.
+                <a asp-controller="Profile" asp-action="Edit" class="alert-link">Update Profile</a>
+            </div>
+        }
+
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> <strong>Bulk Enrollment:</strong> Select multiple courses to enroll in all at once. The Dean will review your entire enrollment batch together.
+        </div>
+
+        <form asp-action="Create" method="post" id="enrollmentForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar3"></i> Enrollment Period</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Semester" class="form-label">Semester</label>
+                            <select asp-for="Semester" class="form-select" required>
+                                <option value="">-- Select Semester --</option>
+                                <option value="1st Semester" selected="@(ViewBag.DefaultSemester == "1st Semester")">1st Semester</option>
+                                <option value="2nd Semester" selected="@(ViewBag.DefaultSemester == "2nd Semester")">2nd Semester</option>
+                                <option value="Summer" selected="@(ViewBag.DefaultSemester == "Summer")">Summer</option>
+                            </select>
+                            <span asp-validation-for="Semester" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="AcademicYear" class="form-label">Academic Year</label>
+                            @{
+                                var academicYears = ViewBag.AcademicYears as List<StudentEnrollmentSystem.Models.AcademicYear> ?? new List<StudentEnrollmentSystem.Models.AcademicYear>();
+                                var defaultYear = ViewBag.DefaultAcademicYear as string;
+                            }
+                            <select asp-for="AcademicYear" class="form-select" required>
+                                <option value="">-- Select Academic Year --</option>
+                                @foreach (var year in academicYears)
+                                {
+                                    <option value="@year.Year" selected="@(year.Year == defaultYear)">@year.Year</option>
+                                }
+                            </select>
+                            <span asp-validation-for="AcademicYear" class="text-danger"></span>
+                            @if (!academicYears.Any())
+                            {
+                                <div class="form-text text-danger">
+                                    <i class="bi bi-exclamation-triangle"></i> No active academic years available. Please contact the administrator.
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-book"></i> Select Courses</h5>
+                        <span id="selectedCount" class="badge bg-light text-dark">0 courses selected (0 credits)</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <input type="text" id="searchBox" class="form-control" placeholder="Search courses by code or name...">
+                        </div>
+                        <div class="col-md-3">
+                            <select id="departmentFilter" class="form-select">
+                                <option value="">All Departments</option>
+                                @{
+                                    var courses = ViewBag.Courses as List<StudentEnrollmentSystem.Models.Course> ?? new List<StudentEnrollmentSystem.Models.Course>();
+                                    var departments = courses.Select(c => c.Department).Distinct().OrderBy(d => d);
+                                    foreach (var dept in departments)
+                                    {
+                                        <option value="@dept">@dept</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="showOnlyEligible" checked>
+                                <label class="form-check-label" for="showOnlyEligible">
+                                    Show only eligible courses
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="noCourses" class="alert alert-warning" style="display: none;">
+                        <i class="bi bi-exclamation-triangle"></i> No courses match your filters.
+                    </div>
+
+                    <div id="coursesList" class="list-group" style="max-height: 500px; overflow-y: auto;">
+                        @foreach (var course in courses)
+                        {
+                            var missingPrereqs = new List<StudentEnrollmentSystem.Models.Course>();
+                            foreach (var pr in course.PrerequisiteRelations)
+                            {
+                                if (!completedCourseIds.Contains(pr.PrerequisiteCourseId))
+                                {
+                                    missingPrereqs.Add(pr.PrerequisiteCourse);
+                                }
+                            }
+
+                            var hasPrereqs = missingPrereqs.Count == 0;
+                            var meetsYearLevel = IsYearLevelSufficient(course.MinimumYearLevel);
+                            var isEligible = hasPrereqs && meetsYearLevel;
+
+                            <div class="list-group-item course-item @(isEligible ? "eligible" : "not-eligible")"
+                                 data-course-id="@course.Id"
+                                 data-course-code="@course.CourseCode.ToLower()"
+                                 data-course-name="@course.Name.ToLower()"
+                                 data-department="@course.Department"
+                                 data-credits="@course.Credits"
+                                 data-eligible="@isEligible.ToString().ToLower()">
+                                <div class="form-check">
+                                    <input class="form-check-input course-checkbox" type="checkbox" name="CourseIds" value="@course.Id" id="course_@course.Id">
+                                    <label class="form-check-label w-100" for="course_@course.Id">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>@course.CourseCode</strong> - @course.Name
+                                                <br>
+                                                <small class="text-muted">
+                                                    <span class="badge bg-info">@course.Department</span>
+                                                    <span class="badge bg-secondary">@course.Credits credits</span>
+                                                    <span class="badge bg-light text-dark">@course.EnrolledCount/@course.Capacity enrolled</span>
+                                                    @if (!string.IsNullOrEmpty(course.MinimumYearLevel))
+                                                    {
+                                                        <span class="badge bg-warning text-dark">Min: @course.MinimumYearLevel</span>
+                                                    }
+                                                </small>
+                                            </div>
+                                            <div>
+                                                @if (isEligible)
+                                                {
+                                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Eligible</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger"><i class="bi bi-exclamation-circle"></i> Not Eligible</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        @if (!isEligible)
+                                        {
+                                            <div class="mt-2">
+                                                <small class="text-danger">
+                                                    @if (!meetsYearLevel && !string.IsNullOrEmpty(course.MinimumYearLevel))
+                                                    {
+                                                        <div><i class="bi bi-x-circle"></i> Requires @course.MinimumYearLevel year level</div>
+                                                    }
+                                                    @if (missingPrereqs.Any())
+                                                    {
+                                                        <div><i class="bi bi-x-circle"></i> Missing prerequisites: @string.Join(", ", missingPrereqs.Select(p => p.CourseCode))</div>
+                                                    }
+                                                </small>
+                                            </div>
+                                        }
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="bi bi-chat-left-text"></i> Comments (Optional)</h5>
+                </div>
+                <div class="card-body">
+                    <textarea asp-for="Comments" class="form-control" rows="3" placeholder="Add any comments or notes about your enrollment..."></textarea>
+                    <span asp-validation-for="Comments" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                <div>
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>
+                        <i class="bi bi-check-circle"></i> Submit Enrollment Batch
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+                <div class="text-end">
+                    <strong>Total: <span id="totalCourses">0</span> course(s), <span id="totalCredits">0</span> credits</strong>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            const searchBox = $('#searchBox');
+            const departmentFilter = $('#departmentFilter');
+            const showOnlyEligible = $('#showOnlyEligible');
+            const coursesList = $('#coursesList');
+            const noCourses = $('#noCourses');
+            const selectedCount = $('#selectedCount');
+            const totalCourses = $('#totalCourses');
+            const totalCredits = $('#totalCredits');
+            const submitBtn = $('#submitBtn');
+
+            function updateSelectedCount() {
+                const selected = $('.course-checkbox:checked');
+                const count = selected.length;
+                let credits = 0;
+
+                selected.each(function() {
+                    const courseItem = $(this).closest('.course-item');
+                    credits += parseInt(courseItem.data('credits'));
+                });
+
+                selectedCount.text(`${count} course(s) selected (${credits} credits)`);
+                totalCourses.text(count);
+                totalCredits.text(credits);
+
+                if (count > 0) {
+                    submitBtn.prop('disabled', false);
+                } else {
+                    submitBtn.prop('disabled', true);
+                }
+            }
+
+            function filterCourses() {
+                const searchTerm = searchBox.val().toLowerCase();
+                const selectedDept = departmentFilter.val();
+                const eligibleOnly = showOnlyEligible.is(':checked');
+                let visibleCount = 0;
+
+                $('.course-item').each(function() {
+                    const courseCode = $(this).data('course-code');
+                    const courseName = $(this).data('course-name');
+                    const department = $(this).data('department');
+                    const isEligible = $(this).data('eligible') === true;
+
+                    const matchesSearch = searchTerm === '' ||
+                        courseCode.includes(searchTerm) ||
+                        courseName.includes(searchTerm);
+
+                    const matchesDept = selectedDept === '' || department === selectedDept;
+                    const matchesEligibility = !eligibleOnly || isEligible;
+
+                    const matches = matchesSearch && matchesDept && matchesEligibility;
+
+                    if (matches) {
+                        $(this).show();
+                        visibleCount++;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    noCourses.show();
+                    coursesList.hide();
+                } else {
+                    noCourses.hide();
+                    coursesList.show();
+                }
+            }
+
+            searchBox.on('keyup', filterCourses);
+            departmentFilter.on('change', filterCourses);
+            showOnlyEligible.on('change', filterCourses);
+            $('.course-checkbox').on('change', updateSelectedCount);
+
+            // Form validation
+            $('#enrollmentForm').on('submit', function(e) {
+                const selected = $('.course-checkbox:checked').length;
+                if (selected === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one course to enroll in.');
+                    return false;
+                }
+            });
+
+            // Initialize
+            updateSelectedCount();
+            filterCourses();
+        });
+    </script>
+
+    <style>
+        .course-item.not-eligible {
+            background-color: #fff3cd;
+        }
+        .course-item:hover {
+            background-color: #f8f9fa;
+        }
+        .course-checkbox {
+            cursor: pointer;
+        }
+    </style>
+}

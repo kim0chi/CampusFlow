@@ -1,0 +1,112 @@
+@{
+    ViewData["Title"] = "Cashier Dashboard";
+    var studentBalances = ViewBag.StudentBalances as List<(StudentEnrollmentSystem.Models.ApplicationUser Student, decimal Balance, StudentEnrollmentSystem.Models.StudentAccount? Account)>;
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2><i class="bi bi-cash-coin"></i> Cashier Dashboard</h2>
+            <p class="text-muted">Manage student payments and view account balances</p>
+            <p><strong>Current Semester:</strong> @ViewBag.CurrentSemester | <strong>Academic Year:</strong> @ViewBag.CurrentAcademicYear</p>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a asp-action="ProcessPayment" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Process Payment
+            </a>
+            <a asp-action="PaymentHistory" class="btn btn-secondary">
+                <i class="bi bi-clock-history"></i> Payment History
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-people"></i> Student Account Balances</h5>
+        </div>
+        <div class="card-body">
+            @if (studentBalances != null && studentBalances.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Total Billed</th>
+                                <th>Total Paid</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in studentBalances)
+                            {
+                                var totalBilled = item.Account?.TotalBilled ?? 0;
+                                var totalPaid = item.Account?.TotalPaid ?? 0;
+                                var balance = item.Balance;
+                                var percentagePaid = totalBilled > 0 ? (totalPaid / totalBilled) * 100 : 0;
+
+                                <tr>
+                                    <td>@item.Student.StudentNumber</td>
+                                    <td>@item.Student.FullName</td>
+                                    <td>@(item.Student.Department?.Code ?? "N/A")</td>
+                                    <td>₱@totalBilled.ToString("N2")</td>
+                                    <td>₱@totalPaid.ToString("N2")</td>
+                                    <td>
+                                        <strong class="@(balance > 0 ? "text-danger" : "text-success")">
+                                            ₱@balance.ToString("N2")
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        @if (balance <= 0)
+                                        {
+                                            <span class="badge bg-success">Fully Paid</span>
+                                        }
+                                        else if (percentagePaid >= 30)
+                                        {
+                                            <span class="badge bg-warning">@percentagePaid.ToString("F1")% Paid</span>
+                                        }
+                                        else if (totalPaid > 0)
+                                        {
+                                            <span class="badge bg-info">@percentagePaid.ToString("F1")% Paid</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Not Paid</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="StudentAccount" asp-route-id="@item.Student.Id" class="btn btn-sm btn-info">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                        <a asp-action="ProcessPayment" asp-route-studentId="@item.Student.Id" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-cash"></i> Payment
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No student accounts found.</p>
+            }
+        </div>
+    </div>
+</div>

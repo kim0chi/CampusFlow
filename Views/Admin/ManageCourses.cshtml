@@ -1,0 +1,51 @@
+@model List<StudentEnrollmentSystem.Models.Course>
+@{
+    ViewData["Title"] = "Manage Courses";
+}
+
+<h2>Manage Courses</h2>
+<hr />
+
+<p class="text-muted">Select a course to view and manage student enrollments and grades.</p>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Department</th>
+                                <th>Semester</th>
+                                <th>Enrolled Students</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in Model)
+                            {
+                                <tr>
+                                    <td><strong>@course.CourseCode</strong></td>
+                                    <td>@course.Name</td>
+                                    <td>@course.Department</td>
+                                    <td>@course.Semester</td>
+                                    <td>
+                                        <span class="badge bg-info">@course.EnrolledCount students</span>
+                                    </td>
+                                    <td>
+                                        <a asp-action="ManageCourseEnrollments" asp-route-id="@course.Id" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil-square"></i> Manage Grades
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

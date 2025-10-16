@@ -1,0 +1,39 @@
+@{
+    ViewData["Title"] = "Create Department";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Create New Department</h2>
+        <hr />
+
+        <form asp-action="CreateDepartment" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Department Name <span class="text-danger">*</span></label>
+                <input type="text" name="name" class="form-control" required placeholder="e.g., College of Engineering" />
+            </div>
+
+            <div class="mb-3">
+                <label for="code" class="form-label">Department Code <span class="text-danger">*</span></label>
+                <input type="text" name="code" class="form-control" required maxlength="10" placeholder="e.g., COE" />
+                <small class="text-muted">Maximum 10 characters. Must be unique.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Optional description..."></textarea>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="ManageDepartments" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Department</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

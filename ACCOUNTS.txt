@@ -1,0 +1,131 @@
+========================================
+STUDENT ENROLLMENT SYSTEM
+TEST ACCOUNT CREDENTIALS
+========================================
+
+Use these accounts to test the system. All accounts are pre-configured with test data.
+
+----------------------------------------
+ADMINISTRATIVE ACCOUNTS
+----------------------------------------
+
+ADMIN ACCOUNT
+Email:    admin@university.edu
+Password: Admin123!
+Role:     Administrator
+Access:   Full system access - user management, roles, departments, course management
+
+DEAN ACCOUNT
+Email:    dean@university.edu
+Password: Dean123!
+Role:     Dean
+Access:   Student approval, department management, course enrollments
+
+----------------------------------------
+STAFF ACCOUNTS
+----------------------------------------
+
+ACCOUNTING OFFICE
+Email:    accounting@university.edu
+Password: Accounting123!
+Role:     Accounting
+Access:   Financial records, student payments
+
+STUDENT AFFAIRS OFFICE (SAO)
+Email:    sao@university.edu
+Password: Sao123!
+Role:     SAO
+Access:   Student affairs, discipline, activities
+
+LIBRARY
+Email:    library@university.edu
+Password: Library123!
+Role:     Library
+Access:   Library records, book loans
+
+RECORDS OFFICE
+Email:    records@university.edu
+Password: Records123!
+Role:     Records
+Access:   Student records, transcripts
+
+----------------------------------------
+STUDENT ACCOUNTS
+----------------------------------------
+
+STUDENT 1 - Computer Science (Junior)
+Email:    john.doe@student.edu
+Password: Student123!
+Name:     John Doe
+ID:       2025-CCS-0001
+Dept:     College of Computer Studies (CCS)
+Status:   Approved, Profile Completed
+Year:     Junior
+GPA:      3.75
+
+STUDENT 2 - Engineering (Senior)
+Email:    jane.smith@student.edu
+Password: Student123!
+Name:     Jane Smith
+ID:       2025-COE-0001
+Dept:     College of Engineering (COE)
+Status:   Approved, Profile Completed
+Year:     Senior
+GPA:      3.92
+
+STUDENT 3 - Business (Sophomore)
+Email:    mike.johnson@student.edu
+Password: Student123!
+Name:     Mike Johnson
+ID:       2025-CBA-0001
+Dept:     College of Business Administration (CBA)
+Status:   Approved, Profile Completed
+Year:     Sophomore
+GPA:      3.50
+
+STUDENT 4 - Computer Science (Freshman)
+Email:    alex.wilson@student.edu
+Password: Student123!
+Name:     Alex Wilson
+ID:       2025-CCS-0002
+Dept:     College of Computer Studies (CCS)
+Status:   Approved, Profile Completed
+Year:     Freshman
+GPA:      3.85
+
+----------------------------------------
+TESTING NOTES
+----------------------------------------
+
+1. RECOMMENDED STARTING ACCOUNT:
+   Start with the Admin account (admin@university.edu) to explore all features.
+
+2. PHILIPPINE FEATURES:
+   - All students have Philippine addresses (Province, Municipality, Barangay, Postal Code)
+   - Student IDs follow format: YYYY-DEPT-0001
+   - 8 Philippine university departments available
+
+3. TESTING NEW STUDENT REGISTRATION:
+   - Register a new student account
+   - Student will be in "Pending" status
+   - Login as Admin or Dean to approve/reject
+   - Upon approval, student ID is auto-generated
+   - Student must complete profile before accessing system
+
+4. TESTING DEPARTMENT MANAGEMENT:
+   - Login as Admin or Dean
+   - Navigate to Department Management
+   - Create/activate/deactivate departments
+   - Departments: CCS, COE, CBA, CAS, COED, CON, CCJ, CHM
+
+5. SECURITY NOTE:
+   - These are TEST ACCOUNTS ONLY
+   - Default passwords are for testing purposes
+   - In production, use strong unique passwords
+   - Change all default passwords before production use
+
+========================================
+NEED HELP?
+See CLIENT_TESTING_GUIDE.md for detailed testing instructions
+See PHILIPPINE_FEATURES_TEST.md for Philippine-specific feature testing
+========================================

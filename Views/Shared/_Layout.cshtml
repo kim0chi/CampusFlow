@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - StudentEnrollmentSystem</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/StudentEnrollmentSystem.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">StudentEnrollmentSystem</a>
+                }
+                else
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">StudentEnrollmentSystem</a>
+                }
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Dashboard" asp-action="Index">
+                                    <i class="bi bi-speedometer2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">
+                                    <i class="bi bi-person-circle"></i> My Profile
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Student"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Course" asp-action="Browse">
+                                        <i class="bi bi-book"></i> Browse Courses
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Enrollment" asp-action="Index">
+                                        <i class="bi bi-card-checklist"></i> My Enrollments
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Prospectus" asp-action="Index">
+                                        <i class="bi bi-journal-text"></i> My Prospectus
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="StudentAccount" asp-action="Index">
+                                        <i class="bi bi-wallet2"></i> My Account
+                                    </a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Cashier") || User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="cashierDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-cash-coin"></i> Cashier
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="cashierDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Cashier" asp-action="Index">
+                                                <i class="bi bi-speedometer2"></i> Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Cashier" asp-action="ProcessPayment">
+                                                <i class="bi bi-cash"></i> Process Payment
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Cashier" asp-action="PaymentHistory">
+                                                <i class="bi bi-clock-history"></i> Payment History
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.IsInRole("CampusDirector") || User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="PromissoryNote" asp-action="PendingReview">
+                                        <i class="bi bi-file-earmark-check"></i> Promissory Notes
+                                    </a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Dean") || User.IsInRole("Accounting") || User.IsInRole("SAO") || User.IsInRole("Library") || User.IsInRole("Records"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="deptDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-clipboard-check"></i> Approvals
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="deptDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Dashboard" asp-action="PendingApprovals">
+                                                <i class="bi bi-hourglass-split"></i> Pending Approvals
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Dashboard" asp-action="ApprovalHistory">
+                                                <i class="bi bi-clock-history"></i> Approval History
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin") || User.IsInRole("Dean"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-gear"></i> Admin
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                        <li><a class="dropdown-item" asp-controller="Course" asp-action="Index"><i class="bi bi-book"></i> Manage Courses</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="ManagePrograms"><i class="bi bi-journal-code"></i> Manage Programs</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="ManageCourses"><i class="bi bi-pencil-square"></i> Grade Students</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="ManageStudents"><i class="bi bi-person-badge"></i> Manage Students</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="PendingRegistrations"><i class="bi bi-person-plus"></i> Pending Registrations</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="ManageDepartments"><i class="bi bi-building"></i> Manage Departments</a></li>
+                                        <li><a class="dropdown-item" asp-controller="AcademicYear" asp-action="Index"><i class="bi bi-calendar-range"></i> Manage Academic Years</a></li>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users"><i class="bi bi-people"></i> Manage Users</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-house-door"></i> Home
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - StudentEnrollmentSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,69 @@
+@model List<StudentEnrollmentSystem.Models.Course>
+@{
+    ViewData["Title"] = "Manage Courses";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Manage Courses</h2>
+    <a asp-action="Create" class="btn btn-success">Create New Course</a>
+</div>
+<hr />
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Course Code</th>
+                    <th>Name</th>
+                    <th>Credits</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Capacity</th>
+                    <th>Enrolled</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in Model)
+                {
+                    <tr>
+                        <td><strong>@course.CourseCode</strong></td>
+                        <td>@course.Name</td>
+                        <td>@course.Credits</td>
+                        <td>@course.Department</td>
+                        <td>@course.Semester</td>
+                        <td>@course.Capacity</td>
+                        <td>@course.EnrolledCount</td>
+                        <td>
+                            @if (course.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@course.Id" class="btn btn-sm btn-info">Details</a>
+                            <a asp-action="Edit" asp-route-id="@course.Id" class="btn btn-sm btn-warning">Edit</a>
+                            @if (course.IsActive)
+                            {
+                                <a asp-action="Delete" asp-route-id="@course.Id" class="btn btn-sm btn-danger">Deactivate</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <p>No courses found. <a asp-action="Create">Create one now</a>.</p>
+    </div>
+}

@@ -1,0 +1,323 @@
+@model StudentEnrollmentSystem.Models.ApplicationUser
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>My Profile</h2>
+            <div>
+                <a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+                <a asp-action="ChangePassword" class="btn btn-secondary">Change Password</a>
+            </div>
+        </div>
+        <hr />
+    </div>
+</div>
+
+<div class="row">
+    <!-- Profile Picture and Basic Info -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                {
+                    <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px; font-size: 48px;">
+                        @Model.Initials
+                    </div>
+                }
+
+                <h4>@Model.FullName</h4>
+                <p class="text-muted">@Model.Email</p>
+
+                @if (!string.IsNullOrEmpty(Model.StudentNumber))
+                {
+                    <p><strong>Student #:</strong> @Model.StudentNumber</p>
+                }
+
+                <div class="mt-3">
+                    <p><strong>Profile Completion</strong></p>
+                    <div class="progress">
+                        <div class="progress-bar @(Model.ProfileCompletionPercentage >= 80 ? "bg-success" : Model.ProfileCompletionPercentage >= 50 ? "bg-warning" : "bg-danger")"
+                             role="progressbar"
+                             style="width: @Model.ProfileCompletionPercentage%"
+                             aria-valuenow="@Model.ProfileCompletionPercentage"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            @Model.ProfileCompletionPercentage%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Information -->
+    <div class="col-md-8">
+        <!-- Personal Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-5">Email:</dt>
+                            <dd class="col-sm-7">@Model.Email</dd>
+
+                            <dt class="col-sm-5">Phone:</dt>
+                            <dd class="col-sm-7">@(Model.PhoneNumber ?? "Not provided")</dd>
+
+                            @if (Model.DateOfBirth.HasValue)
+                            {
+                                <dt class="col-sm-5">Date of Birth:</dt>
+                                <dd class="col-sm-7">@Model.DateOfBirth.Value.ToString("MMMM dd, yyyy") (@Model.Age years old)</dd>
+                            }
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-5">Department:</dt>
+                            <dd class="col-sm-7">@(Model.Department?.Name ?? "Not provided")</dd>
+
+                            @if (!string.IsNullOrEmpty(Model.YearOfStudy))
+                            {
+                                <dt class="col-sm-5">Year:</dt>
+                                <dd class="col-sm-7">@Model.YearOfStudy</dd>
+                            }
+
+                            @if (Model.GPA.HasValue)
+                            {
+                                <dt class="col-sm-5">GPA:</dt>
+                                <dd class="col-sm-7">@Model.GPA.Value.ToString("F2")</dd>
+                            }
+                        </dl>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Bio))
+                {
+                    <hr />
+                    <p><strong>About Me:</strong></p>
+                    <p>@Model.Bio</p>
+                }
+            </div>
+        </div>
+
+        <!-- Academic Information -->
+        @if (!string.IsNullOrEmpty(Model.Major) || !string.IsNullOrEmpty(Model.Minor))
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Academic Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        @if (!string.IsNullOrEmpty(Model.Major))
+                        {
+                            <dt class="col-sm-3">Major:</dt>
+                            <dd class="col-sm-9">@Model.Major</dd>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Minor))
+                        {
+                            <dt class="col-sm-3">Minor:</dt>
+                            <dd class="col-sm-9">@Model.Minor</dd>
+                        }
+
+                        @if (Model.GPA.HasValue)
+                        {
+                            <dt class="col-sm-3">GPA:</dt>
+                            <dd class="col-sm-9">@Model.GPA.Value.ToString("F2")</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        }
+
+        <!-- Contact Information -->
+        @if (!string.IsNullOrEmpty(Model.Address) || !string.IsNullOrEmpty(Model.City))
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        @if (!string.IsNullOrEmpty(Model.Address))
+                        {
+                            <dt class="col-sm-3">Address:</dt>
+                            <dd class="col-sm-9">
+                                @Model.Address<br />
+                                @if (!string.IsNullOrEmpty(Model.Barangay))
+                                {
+                                    @Model.Barangay<br />
+                                }
+                                @if (!string.IsNullOrEmpty(Model.City))
+                                {
+                                    @Model.City@((!string.IsNullOrEmpty(Model.Province) ? $", {Model.Province}" : "")) @Model.PostalCode
+                                }
+                            </dd>
+                        }
+
+                        <dt class="col-sm-3">Email:</dt>
+                        <dd class="col-sm-9">@Model.Email</dd>
+
+                        @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                        {
+                            <dt class="col-sm-3">Phone:</dt>
+                            <dd class="col-sm-9">@Model.PhoneNumber</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        }
+
+        <!-- Emergency Contact -->
+        @if (!string.IsNullOrEmpty(Model.EmergencyContactName))
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5>Emergency Contact</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Name:</dt>
+                        <dd class="col-sm-9">@Model.EmergencyContactName</dd>
+
+                        @if (!string.IsNullOrEmpty(Model.EmergencyContactPhone))
+                        {
+                            <dt class="col-sm-3">Phone:</dt>
+                            <dd class="col-sm-9">@Model.EmergencyContactPhone</dd>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.EmergencyContactRelationship))
+                        {
+                            <dt class="col-sm-3">Relationship:</dt>
+                            <dd class="col-sm-9">@Model.EmergencyContactRelationship</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        }
+
+        <!-- Course History -->
+        @if (User.IsInRole("Student"))
+        {
+            var completedEnrollments = ViewBag.CompletedEnrollments as List<StudentEnrollmentSystem.Models.Enrollment> ?? new List<StudentEnrollmentSystem.Models.Enrollment>();
+            var inProgressEnrollments = ViewBag.InProgressEnrollments as List<StudentEnrollmentSystem.Models.Enrollment> ?? new List<StudentEnrollmentSystem.Models.Enrollment>();
+            var failedEnrollments = ViewBag.FailedEnrollments as List<StudentEnrollmentSystem.Models.Enrollment> ?? new List<StudentEnrollmentSystem.Models.Enrollment>();
+            var totalCreditsEarned = ViewBag.TotalCreditsEarned as int? ?? 0;
+
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Course History</h5>
+                    <span class="badge bg-success">Total Credits Earned: @totalCreditsEarned</span>
+                </div>
+                <div class="card-body">
+                    @if (completedEnrollments.Any())
+                    {
+                        <h6 class="text-success">✅ Completed Courses</h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                        <th>Semester</th>
+                                        <th>Credits</th>
+                                        <th>Grade</th>
+                                        <th>Completed Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var enrollment in completedEnrollments)
+                                    {
+                                        <tr>
+                                            <td><strong>@enrollment.Course.CourseCode</strong></td>
+                                            <td>@enrollment.Course.Name</td>
+                                            <td>@enrollment.Course.Semester</td>
+                                            <td>@enrollment.Course.Credits</td>
+                                            <td><strong class="text-success">@enrollment.Grade</strong></td>
+                                            <td>@(enrollment.CompletedDate?.ToString("MMM dd, yyyy") ?? "N/A")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No completed courses yet.</p>
+                    }
+
+                    @if (inProgressEnrollments.Any())
+                    {
+                        <h6 class="text-info">📖 Courses in Progress</h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                        <th>Semester</th>
+                                        <th>Credits</th>
+                                        <th>Enrolled Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var enrollment in inProgressEnrollments)
+                                    {
+                                        <tr>
+                                            <td><strong>@enrollment.Course.CourseCode</strong></td>
+                                            <td>@enrollment.Course.Name</td>
+                                            <td>@enrollment.Course.Semester</td>
+                                            <td>@enrollment.Course.Credits</td>
+                                            <td>@enrollment.SubmittedDate.ToString("MMM dd, yyyy")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    @if (failedEnrollments.Any())
+                    {
+                        <h6 class="text-danger">❌ Failed Courses</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                        <th>Semester</th>
+                                        <th>Grade</th>
+                                        <th>Failed Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var enrollment in failedEnrollments)
+                                    {
+                                        <tr>
+                                            <td><strong>@enrollment.Course.CourseCode</strong></td>
+                                            <td>@enrollment.Course.Name</td>
+                                            <td>@enrollment.Course.Semester</td>
+                                            <td><strong class="text-danger">@enrollment.Grade</strong></td>
+                                            <td>@(enrollment.CompletedDate?.ToString("MMM dd, yyyy") ?? "N/A")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

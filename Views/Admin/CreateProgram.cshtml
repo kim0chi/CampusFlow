@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Create Program";
+    var departments = ViewBag.Departments as List<StudentEnrollmentSystem.Models.Department>;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2>Create New Program</h2>
+        <hr />
+
+        <form asp-action="CreateProgram" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Program Name <span class="text-danger">*</span></label>
+                <input type="text" name="name" class="form-control" required placeholder="e.g., Bachelor of Science in Computer Science" />
+                <small class="text-muted">Enter the full program name</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                <select name="departmentId" class="form-select" required>
+                    <option value="">Select Department...</option>
+                    @if (departments != null)
+                    {
+                        foreach (var dept in departments)
+                        {
+                            <option value="@dept.Id">@dept.Name (@dept.Code)</option>
+                        }
+                    }
+                </select>
+                <small class="text-muted">Select the department that manages this program</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3" placeholder="Optional description of the program..."></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="totalCreditsRequired" class="form-label">Total Credits Required <span class="text-danger">*</span></label>
+                <input type="number" name="totalCreditsRequired" class="form-control" required min="30" max="300" value="120" />
+                <small class="text-muted">Total credits needed to complete this program (typically 120-150)</small>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="ManagePrograms" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Program</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

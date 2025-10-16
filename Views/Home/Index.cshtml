@@ -1,0 +1,110 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <div class="text-center mb-5">
+        <h1 class="display-3 fw-bold">Student Enrollment System</h1>
+        <p class="lead text-muted">Streamlined course enrollment with multi-stage approval workflow</p>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card border-primary h-100">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-person-circle display-1 text-primary mb-3"></i>
+                    <h3 class="card-title">Students</h3>
+                    <p class="card-text">Browse available courses, submit enrollment requests, and track your application status through the approval process.</p>
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-controller="Account" asp-action="StudentLogin" class="btn btn-primary btn-lg">Student Login</a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary">New Student? Register Here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-success h-100">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-building display-1 text-success mb-3"></i>
+                    <h3 class="card-title">Department Staff</h3>
+                    <p class="card-text">Review and process enrollment requests, manage approvals, and maintain student records.</p>
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-controller="Account" asp-action="StaffLogin" class="btn btn-success btn-lg">Staff Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h3 class="text-center mb-4">Approval Departments</h3>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-1-circle-fill display-4 text-info mb-2"></i>
+                    <h5 class="card-title">Dean's Office</h5>
+                    <p class="card-text small">Academic approval and program verification</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-2-circle-fill display-4 text-info mb-2"></i>
+                    <h5 class="card-title">Accounting</h5>
+                    <p class="card-text small">Financial clearance and payment verification</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-3-circle-fill display-4 text-info mb-2"></i>
+                    <h5 class="card-title">Student Affairs (SAO)</h5>
+                    <p class="card-text small">Student conduct and eligibility verification</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-4-circle-fill display-4 text-info mb-2"></i>
+                    <h5 class="card-title">Library</h5>
+                    <p class="card-text small">Library clearance and resource access</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="bi bi-5-circle-fill display-4 text-info mb-2"></i>
+                    <h5 class="card-title">Records</h5>
+                    <p class="card-text small">Final enrollment confirmation and records update</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">How It Works</h5>
+                    <ol class="mb-0">
+                        <li class="mb-2"><strong>Students</strong> browse available courses and submit enrollment requests</li>
+                        <li class="mb-2"><strong>Requests</strong> go through a 5-stage approval process</li>
+                        <li class="mb-2"><strong>Each department</strong> reviews and approves or rejects the request</li>
+                        <li class="mb-2"><strong>Upon final approval</strong>, students are officially enrolled in the course</li>
+                        <li><strong>Students</strong> can track their enrollment status in real-time</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+@{
+    ViewData["Title"] = "Submit Promissory Note";
+    var enrollment = ViewBag.Enrollment as StudentEnrollmentSystem.Models.Enrollment;
+    var balance = (decimal)ViewBag.Balance;
+    var requiredPayment = (decimal)ViewBag.RequiredPayment;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h4><i class="bi bi-file-earmark-text"></i> Submit Promissory Note</h4>
+                </div>
+                <div class="card-body">
+                    @if (ViewData.ModelState.ErrorCount > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    @if (enrollment != null)
+                    {
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-book"></i> Enrollment Information</h6>
+                            <p><strong>Course:</strong> @enrollment.Course.CourseCode - @enrollment.Course.Name</p>
+                            <p class="mb-0"><strong>Status:</strong> <span class="badge bg-warning">@enrollment.Status.ToString()</span></p>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <h6><i class="bi bi-calculator"></i> Payment Requirement</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Current Balance:</strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-danger fs-5">₱@balance.ToString("N2")</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <strong>Required Payment (30%):</strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <span class="text-primary fs-5">₱@requiredPayment.ToString("N2")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-primary">
+                            <h6><i class="bi bi-info-circle"></i> About Promissory Notes</h6>
+                            <p>A promissory note is a written promise to pay the required amount by a specified date. If you cannot afford the 30% payment now, you can apply for a promissory note.</p>
+                            <p class="mb-0"><strong>Note:</strong> Your promissory note will need to be approved by the Campus Director before your enrollment can proceed.</p>
+                        </div>
+
+                        <form asp-action="Submit" method="post">
+                            <input type="hidden" name="enrollmentId" value="@enrollment.Id" />
+                            <input type="hidden" name="amountCovered" value="@requiredPayment" />
+
+                            <div class="mb-3">
+                                <label for="reason" class="form-label">Reason for Promissory Note *</label>
+                                <textarea name="reason"
+                                          id="reason"
+                                          class="form-control"
+                                          rows="5"
+                                          required
+                                          placeholder="Please explain why you are unable to pay at this time. Include any relevant financial circumstances or hardships."></textarea>
+                                <div class="form-text">
+                                    Provide a detailed explanation of your situation. This will be reviewed by the Campus Director.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="repaymentDeadline" class="form-label">Proposed Repayment Deadline *</label>
+                                <input type="date"
+                                       name="repaymentDeadline"
+                                       id="repaymentDeadline"
+                                       class="form-control"
+                                       required
+                                       min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")"
+                                       max="@DateTime.Now.AddMonths(6).ToString("yyyy-MM-dd")">
+                                <div class="form-text">
+                                    Select a realistic date by which you commit to pay ₱@requiredPayment.ToString("N2")
+                                </div>
+                            </div>
+
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="bi bi-file-text"></i> Promissory Note Summary</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Amount Covered:</strong> ₱@requiredPayment.ToString("N2")</p>
+                                    <p class="mb-0 text-muted small">
+                                        By submitting this promissory note, you agree to pay the above amount by your proposed deadline.
+                                        Failure to meet this commitment may result in enrollment cancellation or academic holds.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-warning btn-lg">
+                                    <i class="bi bi-send"></i> Submit Promissory Note
+                                </button>
+                                <a asp-controller="StudentAccount" asp-action="MakePayment" asp-route-enrollmentId="@enrollment.Id" class="btn btn-success">
+                                    <i class="bi bi-cash"></i> Pay Now Instead
+                                </a>
+                                <a asp-controller="Enrollment" asp-action="Details" asp-route-id="@enrollment.Id" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i> Enrollment not found or not in awaiting payment status.
+                        </div>
+                        <a asp-controller="Enrollment" asp-action="Index" class="btn btn-primary">
+                            <i class="bi bi-arrow-left"></i> Back to Enrollments
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

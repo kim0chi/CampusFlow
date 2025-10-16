@@ -1,0 +1,78 @@
+@model List<StudentEnrollmentSystem.Models.Department>
+@{
+    ViewData["Title"] = "Manage Departments";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Manage Departments</h2>
+        <hr />
+
+        <div class="mb-3">
+            <a asp-action="CreateDepartment" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Department
+            </a>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var dept in Model)
+                        {
+                            <tr class="@(dept.IsActive ? "" : "table-secondary")">
+                                <td>@dept.Name</td>
+                                <td><span class="badge bg-info">@dept.Code</span></td>
+                                <td>@(dept.Description ?? "N/A")</td>
+                                <td>
+                                    @if (dept.IsActive)
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    }
+                                </td>
+                                <td>@dept.CreatedDate.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    <form asp-action="ToggleDepartmentStatus" asp-route-id="@dept.Id" method="post" class="d-inline">
+                                        @if (dept.IsActive)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Are you sure you want to deactivate this department?')">
+                                                <i class="bi bi-toggle-off"></i> Deactivate
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to activate this department?')">
+                                                <i class="bi bi-toggle-on"></i> Activate
+                                            </button>
+                                        }
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No departments found. Create one to get started.
+            </div>
+        }
+    </div>
+</div>

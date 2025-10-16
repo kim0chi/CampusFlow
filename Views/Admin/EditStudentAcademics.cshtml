@@ -1,0 +1,220 @@
+@model StudentEnrollmentSystem.Models.ApplicationUser
+@{
+    ViewData["Title"] = "Edit Student Academics";
+    var enrollments = ViewBag.Enrollments as List<StudentEnrollmentSystem.Models.Enrollment> ?? new List<StudentEnrollmentSystem.Models.Enrollment>();
+    var programs = ViewBag.Programs as List<StudentEnrollmentSystem.Models.Program> ?? new List<StudentEnrollmentSystem.Models.Program>();
+}
+
+<h2>Edit Academic Information</h2>
+<hr />
+
+<div class="mb-3">
+    <a asp-action="ManageStudents" class="btn btn-secondary">← Back to Students</a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <!-- Student Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Student Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Name</label>
+                        <p>@Model.FullName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Email</label>
+                        <p>@Model.Email</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Date of Birth</label>
+                        <p>
+                            @if (Model.DateOfBirth.HasValue)
+                            {
+                                @Model.DateOfBirth.Value.ToString("MMM dd, yyyy")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not provided</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Phone</label>
+                        <p>@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Not provided" : Model.PhoneNumber)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Information Form -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Academic Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="EditStudentAcademics" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Student Number</label>
+                            <input type="text" name="studentNumber" value="@Model.StudentNumber" class="form-control" required />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Department</label>
+                            <input type="text" name="department" value="@Model.Department" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Year of Study</label>
+                            <select name="yearOfStudy" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="Freshman" selected="@(Model.YearOfStudy == "Freshman")">Freshman</option>
+                                <option value="Sophomore" selected="@(Model.YearOfStudy == "Sophomore")">Sophomore</option>
+                                <option value="Junior" selected="@(Model.YearOfStudy == "Junior")">Junior</option>
+                                <option value="Senior" selected="@(Model.YearOfStudy == "Senior")">Senior</option>
+                                <option value="Graduate" selected="@(Model.YearOfStudy == "Graduate")">Graduate</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Major</label>
+                            <select name="major" class="form-select">
+                                <option value="">Select...</option>
+                                @foreach (var program in programs)
+                                {
+                                    <option value="@program.Name" selected="@(Model.Major == program.Name)">@program.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Minor (Optional)</label>
+                            <select name="minor" class="form-select">
+                                <option value="">None</option>
+                                @foreach (var program in programs)
+                                {
+                                    <option value="@program.Name" selected="@(Model.Minor == program.Name)">@program.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">GPA (0.00 - 4.00)</label>
+                        <input type="number" name="gpa" value="@Model.GPA" class="form-control" step="0.01" min="0" max="4" />
+                        <small class="text-muted">Leave empty if not yet calculated</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                        <a asp-action="ManageStudents" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrollment History -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Enrollment History</h5>
+            </div>
+            <div class="card-body">
+                @if (enrollments.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var enrollment in enrollments)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">@enrollment.Course.CourseCode</h6>
+                                        <p class="mb-1 small">@enrollment.Course.Name</p>
+                                        <small class="text-muted">
+                                            @enrollment.Course.Credits credits
+                                        </small>
+                                    </div>
+                                    <div>
+                                        @if (enrollment.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Completed)
+                                        {
+                                            <span class="badge bg-success">@enrollment.Grade</span>
+                                        }
+                                        else if (enrollment.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Failed)
+                                        {
+                                            <span class="badge bg-danger">@enrollment.Grade</span>
+                                        }
+                                        else if (enrollment.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Enrolled)
+                                        {
+                                            <span class="badge bg-warning">In Progress</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@enrollment.Status</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No enrollment history.</p>
+                }
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>Academic Summary</h5>
+            </div>
+            <div class="card-body">
+                @{
+                    var completedCourses = enrollments.Where(e => e.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Completed).ToList();
+                    var totalCredits = completedCourses.Sum(e => e.Course.Credits);
+                    var inProgressCount = enrollments.Count(e => e.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Enrolled);
+                }
+                <div class="mb-2">
+                    <strong>Completed Courses:</strong> @completedCourses.Count
+                </div>
+                <div class="mb-2">
+                    <strong>Credits Earned:</strong> @totalCredits
+                </div>
+                <div class="mb-2">
+                    <strong>In Progress:</strong> @inProgressCount
+                </div>
+                <div>
+                    <strong>Current GPA:</strong>
+                    @if (Model.GPA.HasValue)
+                    {
+                        <span>@Model.GPA.Value.ToString("F2")</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">N/A</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

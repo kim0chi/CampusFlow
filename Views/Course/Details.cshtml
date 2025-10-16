@@ -1,0 +1,147 @@
+@model StudentEnrollmentSystem.Models.Course
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<h2>Course Details</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>@Model.CourseCode - @Model.Name</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Course Code</dt>
+                    <dd class="col-sm-9">@Model.CourseCode</dd>
+
+                    <dt class="col-sm-3">Course Name</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Description</dt>
+                    <dd class="col-sm-9">@(Model.Description ?? "No description available")</dd>
+
+                    <dt class="col-sm-3">Department</dt>
+                    <dd class="col-sm-9">@Model.Department</dd>
+
+                    <dt class="col-sm-3">Credits</dt>
+                    <dd class="col-sm-9">@Model.Credits</dd>
+
+                    <dt class="col-sm-3">Semester</dt>
+                    <dd class="col-sm-9">@Model.Semester</dd>
+
+                    <dt class="col-sm-3">Capacity</dt>
+                    <dd class="col-sm-9">
+                        @Model.EnrolledCount / @Model.Capacity
+                        @if (Model.EnrolledCount >= Model.Capacity)
+                        {
+                            <span class="badge bg-danger">Full</span>
+                        }
+                        else if (Model.EnrolledCount >= Model.Capacity * 0.8)
+                        {
+                            <span class="badge bg-warning">Almost Full</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Available</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                    </dd>
+
+                    @if (!string.IsNullOrEmpty(Model.MinimumYearLevel))
+                    {
+                        <dt class="col-sm-3">Minimum Year Level</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-info">@Model.MinimumYearLevel or higher</span>
+                        </dd>
+                    }
+
+                    @if (Model.PrerequisiteRelations.Any())
+                    {
+                        <dt class="col-sm-3">Prerequisites</dt>
+                        <dd class="col-sm-9">
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var prereq in Model.PrerequisiteRelations)
+                                {
+                                    <li>
+                                        <span class="badge bg-secondary">@prereq.PrerequisiteCourse.CourseCode</span>
+                                        @prereq.PrerequisiteCourse.Name
+                                    </li>
+                                }
+                            </ul>
+                        </dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        @if (Model.Enrollments.Any())
+        {
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Enrolled Students (@Model.Enrollments.Count)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Enrolled Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var enrollment in Model.Enrollments.OrderByDescending(e => e.SubmittedDate))
+                                {
+                                    <tr>
+                                        <td>@enrollment.Student.FullName</td>
+                                        <td>@enrollment.Student.Email</td>
+                                        <td>
+                                            @if (enrollment.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Enrolled)
+                                            {
+                                                <span class="badge bg-success">@enrollment.Status</span>
+                                            }
+                                            else if (enrollment.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Rejected)
+                                            {
+                                                <span class="badge bg-danger">@enrollment.Status</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">@enrollment.Status</span>
+                                            }
+                                        </td>
+                                        <td>@enrollment.SubmittedDate.ToString("MMM dd, yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+    }
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

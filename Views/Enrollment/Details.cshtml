@@ -1,0 +1,195 @@
+@model StudentEnrollmentSystem.Models.EnrollmentBatch
+@{
+    ViewData["Title"] = "Enrollment Batch Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="bi bi-file-text"></i> Enrollment Batch Details</h2>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to My Enrollments
+        </a>
+    </div>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Batch Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Batch ID:</dt>
+                        <dd class="col-sm-7">#@Model.Id</dd>
+
+                        <dt class="col-sm-5">Semester:</dt>
+                        <dd class="col-sm-7">@Model.Semester @Model.AcademicYear</dd>
+
+                        <dt class="col-sm-5">Total Courses:</dt>
+                        <dd class="col-sm-7">@Model.Enrollments.Count</dd>
+
+                        <dt class="col-sm-5">Total Credits:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-primary">@Model.TotalCredits credits</span>
+                        </dd>
+
+                        <dt class="col-sm-5">Submitted Date:</dt>
+                        <dd class="col-sm-7">@Model.SubmittedDate.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")</dd>
+
+                        <dt class="col-sm-5">Status:</dt>
+                        <dd class="col-sm-7">
+                            @if (Model.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Enrolled)
+                            {
+                                <span class="badge bg-success">@Model.Status</span>
+                            }
+                            else if (Model.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.Rejected)
+                            {
+                                <span class="badge bg-danger">@Model.Status</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@Model.Status</span>
+                            }
+                        </dd>
+
+                        @if (!string.IsNullOrEmpty(Model.StudentComments))
+                        {
+                            <dt class="col-sm-5">Your Comments:</dt>
+                            <dd class="col-sm-7">@Model.StudentComments</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-book"></i> Courses in This Batch</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Enrollments.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var enrollment in Model.Enrollments.OrderBy(e => e.Course.CourseCode))
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@enrollment.Course.CourseCode</h6>
+                                        <small class="text-muted">@enrollment.Course.Credits credits</small>
+                                    </div>
+                                    <p class="mb-1">@enrollment.Course.Name</p>
+                                    <small class="text-muted">@enrollment.Course.Department</small>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No courses found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.ApprovalSteps.Any())
+    {
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-list-check"></i> Approval Progress</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Step</th>
+                                <th>Status</th>
+                                <th>Approver</th>
+                                <th>Date</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var step in Model.ApprovalSteps.OrderBy(a => a.CreatedDate))
+                            {
+                                <tr>
+                                    <td><strong>@step.StepType.ToString()</strong></td>
+                                    <td>
+                                        @if (step.Status == StudentEnrollmentSystem.Models.Enums.ApprovalStatus.Approved)
+                                        {
+                                            <span class="badge bg-success"><i class="bi bi-check-circle"></i> Approved</span>
+                                        }
+                                        else if (step.Status == StudentEnrollmentSystem.Models.Enums.ApprovalStatus.Rejected)
+                                        {
+                                            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Rejected</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning"><i class="bi bi-clock"></i> Pending</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (step.Approver != null)
+                                        {
+                                            @step.Approver.FullName
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Awaiting approval</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (step.ActionDate.HasValue)
+                                        {
+                                            @step.ActionDate.Value.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(step.Comments))
+                                        {
+                                            @step.Comments
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Status == StudentEnrollmentSystem.Models.Enums.EnrollmentStatus.AwaitingPayment)
+    {
+        <div class="alert alert-warning mt-4">
+            <h5><i class="bi bi-exclamation-triangle"></i> Payment Required</h5>
+            <p>Your enrollment batch has been approved by the Dean. You now need to make a payment or submit a promissory note to proceed.</p>
+            <div class="btn-group" role="group">
+                <a asp-controller="StudentAccount" asp-action="MakePayment" asp-route-enrollmentId="@Model.Id" class="btn btn-success">
+                    <i class="bi bi-cash"></i> Make Payment
+                </a>
+                <a asp-controller="PromissoryNote" asp-action="Submit" asp-route-enrollmentId="@Model.Id" class="btn btn-warning">
+                    <i class="bi bi-file-earmark-text"></i> Submit Promissory Note
+                </a>
+            </div>
+        </div>
+    }
+
+    @if (Model.CompletedDate.HasValue)
+    {
+        <div class="alert alert-info mt-4">
+            <p class="mb-0"><strong>Completed on:</strong> @Model.CompletedDate.Value.ToLocalTime().ToString("MMMM dd, yyyy hh:mm tt")</p>
+        </div>
+    }
+</div>

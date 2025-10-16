@@ -1,0 +1,165 @@
+@model StudentEnrollmentSystem.Models.PromissoryNote
+@{
+    ViewData["Title"] = "Review Promissory Note";
+    var balance = (decimal)ViewBag.Balance;
+    var requiredPayment = (decimal)ViewBag.RequiredPayment;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="bi bi-file-earmark-check"></i> Review Promissory Note</h4>
+                </div>
+                <div class="card-body">
+                    @if (ViewData.ModelState.ErrorCount > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="bi bi-person"></i> Student Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Student Number:</strong> @Model.Student.StudentNumber</p>
+                                    <p><strong>Name:</strong> @Model.Student.FullName</p>
+                                    <p><strong>Email:</strong> @Model.Student.Email</p>
+                                    <p><strong>Department:</strong> @(Model.Student.Department?.Name ?? "N/A")</p>
+                                    <p class="mb-0"><strong>Year Level:</strong> @(Model.Student.YearOfStudy ?? "N/A")</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card border-warning">
+                                <div class="card-header bg-warning">
+                                    <h6 class="mb-0"><i class="bi bi-book"></i> Enrollment Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Semester:</strong> @Model.EnrollmentBatch.Semester @Model.EnrollmentBatch.AcademicYear</p>
+                                    <p><strong>Total Credits:</strong> @Model.EnrollmentBatch.TotalCredits</p>
+                                    <p><strong>Courses (@Model.EnrollmentBatch.Enrollments.Count):</strong></p>
+                                    <ul class="mb-2">
+                                        @foreach (var enrollment in Model.EnrollmentBatch.Enrollments)
+                                        {
+                                            <li><small>@enrollment.Course.CourseCode - @enrollment.Course.Name (@enrollment.Course.Credits cr)</small></li>
+                                        }
+                                    </ul>
+                                    <p class="mb-0"><strong>Status:</strong> <span class="badge bg-warning">@Model.EnrollmentBatch.Status.ToString()</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-danger mb-4">
+                        <div class="card-header bg-danger text-white">
+                            <h6 class="mb-0"><i class="bi bi-calculator"></i> Financial Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <p><strong>Student Balance:</strong></p>
+                                    <p><strong>Required Payment (30%):</strong></p>
+                                    <p class="mb-0"><strong>Amount Covered by Note:</strong></p>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <p class="text-danger fs-5">₱@balance.ToString("N2")</p>
+                                    <p class="text-primary fs-5">₱@requiredPayment.ToString("N2")</p>
+                                    <p class="mb-0 text-warning fs-5">₱@Model.AmountCovered.ToString("N2")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0"><i class="bi bi-file-text"></i> Promissory Note Details</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <strong>Date Submitted:</strong> @Model.SubmittedDate.ToLocalTime().ToString("MMMM dd, yyyy hh:mm tt")
+                            </div>
+                            <div class="mb-3">
+                                <strong>Proposed Repayment Deadline:</strong>
+                                <span class="text-danger fs-5">@Model.RepaymentDeadline.ToString("MMMM dd, yyyy")</span>
+                                @{
+                                    var daysUntilDeadline = (Model.RepaymentDeadline - DateTime.UtcNow).Days;
+                                }
+                                <small class="text-muted">(@daysUntilDeadline days from now)</small>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Student's Reason:</strong>
+                                <div class="border rounded p-3 mt-2 bg-light">
+                                    <p class="mb-0" style="white-space: pre-wrap;">@Model.Reason</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="bi bi-check-circle"></i> Approve Promissory Note</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form asp-action="Approve" method="post">
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <div class="mb-3">
+                                            <label for="approveComments" class="form-label">Comments (Optional)</label>
+                                            <textarea name="comments" id="approveComments" class="form-control" rows="3" placeholder="Add any notes or conditions for approval"></textarea>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-success btn-lg">
+                                                <i class="bi bi-check-circle"></i> Approve Note
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h6 class="mb-0"><i class="bi bi-x-circle"></i> Reject Promissory Note</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form asp-action="Reject" method="post">
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <div class="mb-3">
+                                            <label for="rejectComments" class="form-label">Reason for Rejection *</label>
+                                            <textarea name="comments" id="rejectComments" class="form-control" rows="3" required placeholder="Explain why the promissory note is being rejected"></textarea>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-danger btn-lg">
+                                                <i class="bi bi-x-circle"></i> Reject Note
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a asp-action="PendingReview" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Pending Notes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

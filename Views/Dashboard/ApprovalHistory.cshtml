@@ -1,0 +1,270 @@
+@model List<StudentEnrollmentSystem.Models.ApprovalStep>
+@{
+    ViewData["Title"] = "Approval History";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2><i class="bi bi-clock-history"></i> Approval History - @ViewBag.RoleName</h2>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+<hr />
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body text-center">
+                <h6 class="card-title"><i class="bi bi-list-check"></i> Total Processed</h6>
+                <p class="card-text display-4">@ViewBag.TotalProcessed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <h6 class="card-title"><i class="bi bi-check-circle"></i> Approved</h6>
+                <p class="card-text display-4">@ViewBag.TotalApproved</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-danger">
+            <div class="card-body text-center">
+                <h6 class="card-title"><i class="bi bi-x-circle"></i> Rejected</h6>
+                <p class="card-text display-4">@ViewBag.TotalRejected</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Search & Filter</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" id="searchBox" class="form-control" placeholder="Search by student, course...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="sortBy" class="form-select">
+                        <option value="date-desc">Newest First</option>
+                        <option value="date-asc">Oldest First</option>
+                        <option value="student">Student Name</option>
+                        <option value="course">Course Code</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button id="clearFilters" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <span><strong>Total: <span id="totalCount">@Model.Count</span> record(s)</strong></span>
+                <span id="filteredInfo" class="text-muted" style="display: none;">Showing <span id="filteredCount">0</span> of @Model.Count</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div id="noResults" class="alert alert-warning m-3" style="display: none;">
+                <i class="bi bi-exclamation-triangle"></i> No records match your search criteria.
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Student #</th>
+                            <th>Course</th>
+                            <th>Department</th>
+                            <th>Decision</th>
+                            <th>Approver</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        @foreach (var step in Model)
+                        {
+                            var firstEnrollment = step.EnrollmentBatch.Enrollments.FirstOrDefault();
+                            var courseCount = step.EnrollmentBatch.Enrollments.Count;
+                            <tr class="history-row @(step.Status == StudentEnrollmentSystem.Models.Enums.ApprovalStatus.Approved ? "table-success" : "table-danger")"
+                                data-student-name="@step.EnrollmentBatch.Student.FullName.ToLower()"
+                                data-student-number="@step.EnrollmentBatch.Student.StudentNumber?.ToLower()"
+                                data-course-code="@(firstEnrollment?.Course.CourseCode.ToLower() ?? "")"
+                                data-course-name="@(firstEnrollment?.Course.Name.ToLower() ?? "")"
+                                data-status="@step.Status.ToString().ToLower()"
+                                data-action-date="@(step.ActionDate?.ToString("yyyy-MM-dd") ?? "")">
+                                <td>
+                                    <small>
+                                        @step.ActionDate?.ToString("MMM dd, yyyy")<br />
+                                        @step.ActionDate?.ToString("hh:mm tt")
+                                    </small>
+                                </td>
+                                <td>@step.EnrollmentBatch.Student.FullName</td>
+                                <td>@step.EnrollmentBatch.Student.StudentNumber</td>
+                                <td>
+                                    @if (firstEnrollment != null)
+                                    {
+                                        <strong>@firstEnrollment.Course.CourseCode</strong>
+                                        @if (courseCount > 1)
+                                        {
+                                            <span class="badge bg-primary">+@(courseCount - 1) more</span>
+                                        }
+                                        <br />
+                                        <small class="text-muted">@courseCount course(s), @step.EnrollmentBatch.TotalCredits credits</small>
+                                    }
+                                </td>
+                                <td>
+                                    @if (firstEnrollment != null)
+                                    {
+                                        <span class="badge bg-info">@firstEnrollment.Course.Department</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (step.Status == StudentEnrollmentSystem.Models.Enums.ApprovalStatus.Approved)
+                                    {
+                                        <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Approved</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger"><i class="bi bi-x-circle-fill"></i> Rejected</span>
+                                    }
+                                </td>
+                                <td>
+                                    <small>
+                                        <i class="bi bi-person"></i> @(step.Approver?.FullName ?? "Unknown")
+                                    </small>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(step.Comments))
+                                    {
+                                        <small>@step.Comments</small>
+                                    }
+                                    else
+                                    {
+                                        <em class="text-muted">No comments</em>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> <strong>No approval history found.</strong> You haven't processed any enrollments yet.
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const searchBox = $('#searchBox');
+            const statusFilter = $('#statusFilter');
+            const sortBy = $('#sortBy');
+            const clearButton = $('#clearFilters');
+            const noResults = $('#noResults');
+            const filteredInfo = $('#filteredInfo');
+            const filteredCount = $('#filteredCount');
+
+            function filterAndSort() {
+                const searchTerm = searchBox.val().toLowerCase();
+                const selectedStatus = statusFilter.val().toLowerCase();
+                let visibleCount = 0;
+
+                $('.history-row').each(function() {
+                    const studentName = $(this).data('student-name');
+                    const studentNumber = $(this).data('student-number') || '';
+                    const courseCode = $(this).data('course-code');
+                    const courseName = $(this).data('course-name');
+                    const status = $(this).data('status');
+
+                    const matchesSearch = searchTerm === '' ||
+                        studentName.includes(searchTerm) ||
+                        studentNumber.includes(searchTerm) ||
+                        courseCode.includes(searchTerm) ||
+                        courseName.includes(searchTerm);
+
+                    const matchesStatus = selectedStatus === '' || status === selectedStatus;
+
+                    const matches = matchesSearch && matchesStatus;
+                    $(this).toggle(matches);
+                    if (matches) visibleCount++;
+                });
+
+                noResults.toggle(visibleCount === 0);
+
+                if (searchTerm !== '' || selectedStatus !== '') {
+                    filteredInfo.show();
+                    filteredCount.text(visibleCount);
+                } else {
+                    filteredInfo.hide();
+                }
+
+                sortRows();
+            }
+
+            function sortRows() {
+                const sortValue = sortBy.val();
+                const tbody = $('#historyTableBody');
+                const rows = tbody.find('.history-row:visible').toArray();
+
+                rows.sort(function(a, b) {
+                    switch(sortValue) {
+                        case 'date-asc':
+                            return $(a).data('action-date').localeCompare($(b).data('action-date'));
+                        case 'date-desc':
+                            return $(b).data('action-date').localeCompare($(a).data('action-date'));
+                        case 'student':
+                            return $(a).data('student-name').localeCompare($(b).data('student-name'));
+                        case 'course':
+                            return $(a).data('course-code').localeCompare($(b).data('course-code'));
+                        default:
+                            return 0;
+                    }
+                });
+
+                const allRows = tbody.find('.history-row').toArray();
+                const hiddenRows = allRows.filter(row => !$(row).is(':visible'));
+
+                tbody.empty();
+                rows.forEach(row => tbody.append(row));
+                hiddenRows.forEach(row => tbody.append(row));
+            }
+
+            searchBox.on('keyup', filterAndSort);
+            statusFilter.on('change', filterAndSort);
+            sortBy.on('change', sortRows);
+
+            clearButton.on('click', function() {
+                searchBox.val('');
+                statusFilter.val('');
+                sortBy.val('date-desc');
+                filterAndSort();
+            });
+        });
+    </script>
+}

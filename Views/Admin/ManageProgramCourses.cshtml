@@ -1,0 +1,155 @@
+@model StudentEnrollmentSystem.Models.Program
+@{
+    ViewData["Title"] = "Manage Program Curriculum";
+    var program = ViewBag.Program as StudentEnrollmentSystem.Models.Program;
+    var availableCourses = ViewBag.AvailableCourses as List<StudentEnrollmentSystem.Models.Course>;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Manage Curriculum: @Model.Name</h2>
+        <hr />
+
+        <div class="mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Program Information</h5>
+                    <p><strong>Department:</strong> @(Model.Department?.Name ?? "N/A") (@(Model.Department?.Code ?? "N/A"))</p>
+                    <p><strong>Total Credits Required:</strong> @Model.TotalCreditsRequired</p>
+                    <p><strong>Description:</strong> @(Model.Description ?? "N/A")</p>
+                    <a asp-action="ManagePrograms" class="btn btn-sm btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Programs
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Current Curriculum (@Model.ProgramCourses.Count courses)</h4>
+                @if (Model.ProgramCourses.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Credits</th>
+                                    <th>Required?</th>
+                                    <th>Recommended Year</th>
+                                    <th>Recommended Semester</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var pc in Model.ProgramCourses.OrderBy(p => p.YearRecommended).ThenBy(p => p.SemesterRecommended))
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@pc.Course.CourseCode</strong> - @pc.Course.Name
+                                            <br />
+                                            <small class="text-muted">@pc.Course.Department</small>
+                                        </td>
+                                        <td>@pc.Course.Credits</td>
+                                        <td>
+                                            @if (pc.IsRequired)
+                                            {
+                                                <span class="badge bg-danger">Required</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Elective</span>
+                                            }
+                                        </td>
+                                        <td>@(pc.YearRecommended ?? "N/A")</td>
+                                        <td>@(pc.SemesterRecommended ?? "N/A")</td>
+                                        <td>
+                                            <form asp-action="RemoveProgramCourse" asp-route-id="@pc.Id" asp-route-programId="@Model.Id" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove this course from the curriculum?')">
+                                                    <i class="bi bi-trash"></i> Remove
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> No courses in curriculum yet. Add courses using the form on the right.
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Add Course to Curriculum</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (availableCourses != null && availableCourses.Any())
+                        {
+                            <form asp-action="AddProgramCourse" method="post">
+                                <input type="hidden" name="programId" value="@Model.Id" />
+
+                                <div class="mb-3">
+                                    <label for="courseId" class="form-label">Select Course <span class="text-danger">*</span></label>
+                                    <select name="courseId" class="form-select" required>
+                                        <option value="">Choose a course...</option>
+                                        @foreach (var course in availableCourses)
+                                        {
+                                            <option value="@course.Id">@course.CourseCode - @course.Name (@course.Credits credits)</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="isRequired" class="form-label">Course Type</label>
+                                    <select name="isRequired" class="form-select">
+                                        <option value="true" selected>Required</option>
+                                        <option value="false">Elective</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="yearRecommended" class="form-label">Recommended Year</label>
+                                    <select name="yearRecommended" class="form-select">
+                                        <option value="">Not Specified</option>
+                                        <option value="Freshman">Freshman</option>
+                                        <option value="Sophomore">Sophomore</option>
+                                        <option value="Junior">Junior</option>
+                                        <option value="Senior">Senior</option>
+                                        <option value="Graduate">Graduate</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="semesterRecommended" class="form-label">Recommended Semester</label>
+                                    <select name="semesterRecommended" class="form-select">
+                                        <option value="">Not Specified</option>
+                                        <option value="First Semester">First Semester</option>
+                                        <option value="Second Semester">Second Semester</option>
+                                        <option value="Summer">Summer</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-plus-circle"></i> Add to Curriculum
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mb-0">
+                                <i class="bi bi-info-circle"></i> All active courses have been added to this curriculum.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

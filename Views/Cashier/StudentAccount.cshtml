@@ -1,0 +1,167 @@
+@{
+    ViewData["Title"] = "Student Account Details";
+    var student = ViewBag.Student as StudentEnrollmentSystem.Models.ApplicationUser;
+    var account = ViewBag.Account as StudentEnrollmentSystem.Models.StudentAccount;
+    var fees = ViewBag.Fees as List<StudentEnrollmentSystem.Models.Fee>;
+    var payments = ViewBag.Payments as List<StudentEnrollmentSystem.Models.Payment>;
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-person-circle"></i> Student Account Details</h2>
+
+    @if (student != null && account != null)
+    {
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-person"></i> Student Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Student Number:</strong> @student.StudentNumber</p>
+                        <p><strong>Name:</strong> @student.FullName</p>
+                        <p><strong>Email:</strong> @student.Email</p>
+                        <p><strong>Department:</strong> @(student.Department?.Name ?? "N/A")</p>
+                        <p><strong>Year Level:</strong> @(student.YearOfStudy ?? "N/A")</p>
+                        <p class="mb-0"><strong>Major:</strong> @(student.Major ?? "N/A")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-wallet2"></i> Account Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Semester:</strong> @account.Semester</p>
+                        <p><strong>Academic Year:</strong> @account.AcademicYear</p>
+                        <p><strong>Total Billed:</strong> <span class="text-danger">₱@account.TotalBilled.ToString("N2")</span></p>
+                        <p><strong>Total Paid:</strong> <span class="text-success">₱@account.TotalPaid.ToString("N2")</span></p>
+                        <hr>
+                        <h4>
+                            <strong>Current Balance:</strong>
+                            <span class="@(account.CurrentBalance > 0 ? "text-danger" : "text-success")">
+                                ₱@account.CurrentBalance.ToString("N2")
+                            </span>
+                        </h4>
+                        @{
+                            var percentagePaid = account.TotalBilled > 0 ? (account.TotalPaid / account.TotalBilled) * 100 : 0;
+                        }
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar @(percentagePaid >= 30 ? "bg-success" : "bg-danger")"
+                                 role="progressbar"
+                                 style="width: @percentagePaid%"
+                                 aria-valuenow="@percentagePaid"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                @percentagePaid.ToString("F1")% Paid
+                            </div>
+                        </div>
+                        <p class="mt-2 mb-0">
+                            <small class="text-muted">Required: 30% (₱@((account.TotalBilled * 0.30m).ToString("N2")))</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <a asp-action="ProcessPayment" asp-route-studentId="@student.Id" class="btn btn-primary">
+                    <i class="bi bi-cash"></i> Process Payment
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-warning">
+                        <h5 class="mb-0"><i class="bi bi-receipt"></i> Fees</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (fees != null && fees.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th class="text-end">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var fee in fees)
+                                        {
+                                            <tr>
+                                                <td><span class="badge bg-secondary">@fee.FeeType.ToString()</span></td>
+                                                <td><small>@fee.Description</small></td>
+                                                <td class="text-end">₱@fee.Amount.ToString("N2")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No fees recorded.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-cash-stack"></i> Payments</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (payments != null && payments.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Reference</th>
+                                            <th>Method</th>
+                                            <th class="text-end">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var payment in payments)
+                                        {
+                                            <tr>
+                                                <td><small>@payment.PaymentDate.ToLocalTime().ToString("MMM dd, yyyy")</small></td>
+                                                <td><small>@payment.ReferenceNumber</small></td>
+                                                <td><small>@payment.PaymentMethod.ToString()</small></td>
+                                                <td class="text-end text-success">₱@payment.Amount.ToString("N2")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No payments recorded.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle"></i> Student or account not found.
+        </div>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>

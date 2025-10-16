@@ -1,0 +1,92 @@
+@{
+    ViewData["Title"] = "Staff Login";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h2 class="mb-0"><i class="bi bi-building"></i> Staff Login</h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email Address
+                            </label>
+                            <input type="email" name="email" class="form-control form-control-lg" placeholder="your.email@university.edu" required autofocus />
+                            <div class="form-text">Use your university staff email address</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">
+                                <i class="bi bi-lock"></i> Password
+                            </label>
+                            <div class="input-group">
+                                <input type="password" name="password" id="password" class="form-control form-control-lg" placeholder="Enter your password" required />
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Log In
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4" />
+
+                    <div class="alert alert-info mt-3">
+                        <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Test Staff Accounts</h6>
+                        <small>
+                            <strong>Admin:</strong> admin@university.edu / Admin123!<br />
+                            <strong>Dean:</strong> dean@university.edu / Dean123!<br />
+                            <strong>Accounting:</strong> accounting@university.edu / Accounting123!<br />
+                            <strong>SAO:</strong> sao@university.edu / Sao123!<br />
+                            <strong>Library:</strong> library@university.edu / Library123!<br />
+                            <strong>Records:</strong> records@university.edu / Records123!<br />
+                            <em class="text-muted">Click the eye icon to show/hide password</em>
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer text-center text-muted">
+                    <small>
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-arrow-left"></i> Back to Home
+                        </a>
+                        |
+                        <a asp-action="StudentLogin">
+                            Student Login
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        });
+    </script>
+}

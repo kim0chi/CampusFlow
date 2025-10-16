@@ -1,0 +1,121 @@
+@model List<StudentEnrollmentSystem.Models.Payment>
+@{
+    ViewData["Title"] = "Payment History";
+    var students = ViewBag.Students as List<StudentEnrollmentSystem.Models.ApplicationUser>;
+    var selectedStudentId = ViewBag.SelectedStudentId as string;
+    var startDate = ViewBag.StartDate as DateTime?;
+    var endDate = ViewBag.EndDate as DateTime?;
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-clock-history"></i> Payment History</h2>
+    <p class="text-muted">View all processed payments</p>
+
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Payments</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="PaymentHistory">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="studentId" class="form-label">Student</label>
+                        <select name="studentId" id="studentId" class="form-select">
+                            <option value="">All Students</option>
+                            @if (students != null)
+                            {
+                                foreach (var student in students)
+                                {
+                                    <option value="@student.Id" selected="@(student.Id == selectedStudentId)">
+                                        @student.StudentNumber - @student.FullName
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control" value="@startDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control" value="@endDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Payment Records (@Model.Count)</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Reference #</th>
+                                <th>Date</th>
+                                <th>Student</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Processed By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-info">@payment.ReferenceNumber</span>
+                                    </td>
+                                    <td>@payment.PaymentDate.ToLocalTime().ToString("MMM dd, yyyy hh:mm tt")</td>
+                                    <td>
+                                        @payment.Student.StudentNumber<br>
+                                        <small class="text-muted">@payment.Student.FullName</small>
+                                    </td>
+                                    <td><strong class="text-success">₱@payment.Amount.ToString("N2")</strong></td>
+                                    <td>@payment.PaymentMethod.ToString()</td>
+                                    <td>@(payment.ProcessedByCashier?.FullName ?? "System")</td>
+                                    <td>
+                                        <a asp-action="PaymentReceipt" asp-route-id="@payment.Id" class="btn btn-sm btn-info">
+                                            <i class="bi bi-receipt"></i> Receipt
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-success">
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>₱@Model.Sum(p => p.Amount).ToString("N2")</strong></td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No payments found matching the selected criteria.
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>

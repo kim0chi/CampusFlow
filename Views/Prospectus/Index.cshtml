@@ -1,0 +1,416 @@
+@{
+    ViewData["Title"] = "My Prospectus";
+    var program = ViewBag.Program as StudentEnrollmentSystem.Models.Program;
+    var totalCreditsEarned = ViewBag.TotalCreditsEarned as int? ?? 0;
+    var completedCourses = ViewBag.CompletedCourses as List<StudentEnrollmentSystem.Models.ProgramCourse> ?? new List<StudentEnrollmentSystem.Models.ProgramCourse>();
+    var inProgressCourses = ViewBag.InProgressCourses as List<StudentEnrollmentSystem.Models.ProgramCourse> ?? new List<StudentEnrollmentSystem.Models.ProgramCourse>();
+    var pendingCourses = ViewBag.PendingCourses as List<StudentEnrollmentSystem.Models.ProgramCourse> ?? new List<StudentEnrollmentSystem.Models.ProgramCourse>();
+    var failedCourses = ViewBag.FailedCourses as List<StudentEnrollmentSystem.Models.ProgramCourse> ?? new List<StudentEnrollmentSystem.Models.ProgramCourse>();
+    var availableCourses = ViewBag.AvailableCourses as List<StudentEnrollmentSystem.Models.ProgramCourse> ?? new List<StudentEnrollmentSystem.Models.ProgramCourse>();
+    var lockedCourses = ViewBag.LockedCourses as List<StudentEnrollmentSystem.Models.ProgramCourse> ?? new List<StudentEnrollmentSystem.Models.ProgramCourse>();
+    var enrollmentLookup = ViewBag.EnrollmentLookup as Dictionary<int, StudentEnrollmentSystem.Models.Enrollment> ?? new Dictionary<int, StudentEnrollmentSystem.Models.Enrollment>();
+}
+
+<h2>My Prospectus</h2>
+<hr />
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-warning">
+        @ViewBag.Error
+    </div>
+    <a asp-controller="Profile" asp-action="Edit" class="btn btn-primary">Update Profile</a>
+}
+else if (program != null)
+{
+    <!-- Program Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">@program.Name</h4>
+                            <small>@program.Department</small>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="mb-0">@totalCreditsEarned / @program.TotalCreditsRequired Credits</h5>
+                            <small>@(program.TotalCreditsRequired > 0 ? Math.Round((double)totalCreditsEarned / program.TotalCreditsRequired * 100, 1) : 0)% Complete</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p>@program.Description</p>
+                    <div class="progress" style="height: 25px;">
+                        @{
+                            var progressPercentage = program.TotalCreditsRequired > 0 ? (double)totalCreditsEarned / program.TotalCreditsRequired * 100 : 0;
+                        }
+                        <div class="progress-bar @(progressPercentage >= 75 ? "bg-success" : progressPercentage >= 50 ? "bg-info" : "bg-warning")"
+                             role="progressbar"
+                             style="width: @progressPercentage%"
+                             aria-valuenow="@progressPercentage"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                            @Math.Round(progressPercentage, 1)%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="d-flex gap-3 flex-wrap">
+                <span><span class="badge bg-success">✅</span> Completed</span>
+                <span><span class="badge bg-primary">📚</span> Currently Taking</span>
+                <span><span class="badge bg-warning">⏳</span> Pending Approval</span>
+                <span><span class="badge bg-danger">❌</span> Failed</span>
+                <span><span class="badge bg-info">📖</span> Available</span>
+                <span><span class="badge bg-secondary">🔒</span> Locked</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed Courses -->
+    @if (completedCourses.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">✅ Completed Courses (@completedCourses.Count)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var pc in completedCourses.OrderBy(c => c.YearRecommended).ThenBy(c => c.Course.CourseCode))
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title">@pc.Course.CourseCode - @pc.Course.Name</h6>
+                                            <p class="card-text mb-1">
+                                                <small class="text-muted">
+                                                    @pc.Course.Credits credits
+                                                    @if (!string.IsNullOrEmpty(pc.YearRecommended))
+                                                    {
+                                                        <span> • Recommended: @pc.YearRecommended @pc.SemesterRecommended</span>
+                                                    }
+                                                </small>
+                                            </p>
+                                            @if (enrollmentLookup.ContainsKey(pc.CourseId) && !string.IsNullOrEmpty(enrollmentLookup[pc.CourseId].Grade))
+                                            {
+                                                <span class="badge bg-success">Grade: @enrollmentLookup[pc.CourseId].Grade</span>
+                                            }
+                                        </div>
+                                        <span class="badge bg-success" style="height: fit-content;">✅</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Currently Taking Courses -->
+    @if (inProgressCourses.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📚 Currently Taking (@inProgressCourses.Count)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">These are courses you are actively enrolled in and currently taking.</p>
+                <div class="row">
+                    @foreach (var pc in inProgressCourses.OrderBy(c => c.YearRecommended).ThenBy(c => c.Course.CourseCode))
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title">@pc.Course.CourseCode - @pc.Course.Name</h6>
+                                            <p class="card-text mb-1">
+                                                <small class="text-muted">
+                                                    @pc.Course.Credits credits
+                                                    @if (!string.IsNullOrEmpty(pc.YearRecommended))
+                                                    {
+                                                        <span> • Recommended: @pc.YearRecommended @pc.SemesterRecommended</span>
+                                                    }
+                                                </small>
+                                            </p>
+                                            @if (enrollmentLookup.ContainsKey(pc.CourseId) && !string.IsNullOrEmpty(enrollmentLookup[pc.CourseId].Grade))
+                                            {
+                                                <span class="badge bg-info">Current Grade: @enrollmentLookup[pc.CourseId].Grade</span>
+                                            }
+                                        </div>
+                                        <span class="badge bg-primary" style="height: fit-content;">📚</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Pending Approval Courses -->
+    @if (pendingCourses.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">⏳ Pending Approval (@pendingCourses.Count)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">These enrollment requests are being processed through the approval workflow.</p>
+                <div class="row">
+                    @foreach (var pc in pendingCourses.OrderBy(c => c.YearRecommended).ThenBy(c => c.Course.CourseCode))
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title">@pc.Course.CourseCode - @pc.Course.Name</h6>
+                                            <p class="card-text mb-1">
+                                                <small class="text-muted">
+                                                    @pc.Course.Credits credits
+                                                    @if (!string.IsNullOrEmpty(pc.YearRecommended))
+                                                    {
+                                                        <span> • Recommended: @pc.YearRecommended @pc.SemesterRecommended</span>
+                                                    }
+                                                </small>
+                                            </p>
+                                            @if (enrollmentLookup.ContainsKey(pc.CourseId))
+                                            {
+                                                var enrollment = enrollmentLookup[pc.CourseId];
+                                                <span class="badge bg-warning text-dark">Status: @enrollment.Status</span>
+                                            }
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-warning text-dark mb-2" style="height: fit-content;">⏳</span>
+                                            @if (enrollmentLookup.ContainsKey(pc.CourseId))
+                                            {
+                                                <a asp-controller="Enrollment" asp-action="Details" asp-route-id="@enrollmentLookup[pc.CourseId].Id" class="btn btn-sm btn-outline-warning d-block">View Status</a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Failed Courses -->
+    @if (failedCourses.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">❌ Failed Courses (@failedCourses.Count)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">These courses were not successfully completed. You may re-enroll if they are available.</p>
+                <div class="row">
+                    @foreach (var pc in failedCourses.OrderBy(c => c.YearRecommended).ThenBy(c => c.Course.CourseCode))
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-danger">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title">@pc.Course.CourseCode - @pc.Course.Name</h6>
+                                            <p class="card-text mb-1">
+                                                <small class="text-muted">
+                                                    @pc.Course.Credits credits
+                                                    @if (!string.IsNullOrEmpty(pc.YearRecommended))
+                                                    {
+                                                        <span> • Recommended: @pc.YearRecommended @pc.SemesterRecommended</span>
+                                                    }
+                                                </small>
+                                            </p>
+                                            @if (enrollmentLookup.ContainsKey(pc.CourseId) && !string.IsNullOrEmpty(enrollmentLookup[pc.CourseId].Grade))
+                                            {
+                                                <span class="badge bg-danger">Grade: @enrollmentLookup[pc.CourseId].Grade</span>
+                                            }
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-danger mb-2" style="height: fit-content;">❌</span>
+                                            <a asp-controller="Enrollment" asp-action="Create" asp-route-id="@pc.CourseId" class="btn btn-sm btn-outline-danger d-block">Re-enroll</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Available Courses -->
+    @if (availableCourses.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">📖 Available to Take (@availableCourses.Count)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var pc in availableCourses.OrderBy(c => c.YearRecommended).ThenBy(c => c.Course.CourseCode))
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title">@pc.Course.CourseCode - @pc.Course.Name</h6>
+                                            <p class="card-text mb-1">
+                                                <small class="text-muted">
+                                                    @pc.Course.Credits credits
+                                                    @if (!string.IsNullOrEmpty(pc.YearRecommended))
+                                                    {
+                                                        <span> • Recommended: @pc.YearRecommended @pc.SemesterRecommended</span>
+                                                    }
+                                                    @if (pc.IsRequired)
+                                                    {
+                                                        <span class="badge bg-danger">Required</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-secondary">Elective</span>
+                                                    }
+                                                </small>
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <span class="badge bg-info mb-2" style="height: fit-content;">📖</span>
+                                            <a asp-controller="Enrollment" asp-action="Create" asp-route-id="@pc.CourseId" class="btn btn-sm btn-primary d-block">Enroll</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Locked Courses -->
+    @if (lockedCourses.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">🔒 Locked Courses (@lockedCourses.Count)</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">These courses are locked because you haven't met the prerequisites or year-level requirements yet.</p>
+                <div class="row">
+                    @foreach (var pc in lockedCourses.OrderBy(c => c.YearRecommended).ThenBy(c => c.Course.CourseCode))
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-secondary">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title">@pc.Course.CourseCode - @pc.Course.Name</h6>
+                                            <p class="card-text mb-1">
+                                                <small class="text-muted">
+                                                    @pc.Course.Credits credits
+                                                    @if (!string.IsNullOrEmpty(pc.YearRecommended))
+                                                    {
+                                                        <span> • Recommended: @pc.YearRecommended @pc.SemesterRecommended</span>
+                                                    }
+                                                </small>
+                                            </p>
+                                            @if (pc.Course.PrerequisiteRelations.Any())
+                                            {
+                                                <small class="text-danger">
+                                                    <strong>Prerequisites:</strong>
+                                                    @string.Join(", ", pc.Course.PrerequisiteRelations.Select(pr => pr.PrerequisiteCourse.CourseCode))
+                                                </small>
+                                            }
+                                            @if (!string.IsNullOrEmpty(pc.Course.MinimumYearLevel))
+                                            {
+                                                <small class="text-danger d-block">
+                                                    <strong>Min Year:</strong> @pc.Course.MinimumYearLevel
+                                                </small>
+                                            }
+                                        </div>
+                                        <span class="badge bg-secondary" style="height: fit-content;">🔒</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!completedCourses.Any() && !inProgressCourses.Any() && !pendingCourses.Any() && !failedCourses.Any() && !availableCourses.Any() && !lockedCourses.Any())
+    {
+        <div class="alert alert-info">
+            <p>No courses found in this program. Please contact your advisor.</p>
+        </div>
+    }
+}
+
+<!-- Summary Stats -->
+@if (program != null)
+{
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Summary</h5>
+                    <div class="row text-center">
+                        <div class="col-md-2">
+                            <div class="p-2">
+                                <h3 class="text-success">@completedCourses.Count</h3>
+                                <small class="text-muted">Completed</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="p-2">
+                                <h3 class="text-primary">@inProgressCourses.Count</h3>
+                                <small class="text-muted">Currently Taking</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="p-2">
+                                <h3 class="text-warning">@pendingCourses.Count</h3>
+                                <small class="text-muted">Pending</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="p-2">
+                                <h3 class="text-danger">@failedCourses.Count</h3>
+                                <small class="text-muted">Failed</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="p-2">
+                                <h3 class="text-info">@availableCourses.Count</h3>
+                                <small class="text-muted">Available</small>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="p-2">
+                                <h3 class="text-secondary">@lockedCourses.Count</h3>
+                                <small class="text-muted">Locked</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

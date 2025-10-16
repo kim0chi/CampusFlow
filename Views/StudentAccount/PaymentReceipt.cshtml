@@ -1,0 +1,111 @@
+@model StudentEnrollmentSystem.Models.Payment
+@{
+    ViewData["Title"] = "Payment Receipt";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white text-center">
+                    <h3><i class="bi bi-receipt"></i> Payment Receipt</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h1 class="text-success"><i class="bi bi-check-circle-fill"></i></h1>
+                        <h4 class="text-success">Payment Successful</h4>
+                        <p class="text-muted">Thank you for your payment!</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Reference Number:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-primary fs-6">@Model.ReferenceNumber</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Payment Date:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            @Model.PaymentDate.ToLocalTime().ToString("MMMM dd, yyyy hh:mm tt")
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-3">Payment Details</h5>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Amount Paid:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <h4 class="text-success mb-0">₱@Model.Amount.ToString("N2")</h4>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Payment Method:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            @Model.PaymentMethod.ToString()
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Semester:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            @Model.Semester
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Academic Year:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            @Model.AcademicYear
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> <strong>Note:</strong> This is a demo payment system. No actual charges have been made. Keep this reference number for your records.
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button onclick="window.print()" class="btn btn-primary">
+                            <i class="bi bi-printer"></i> Print Receipt
+                        </button>
+                        <a asp-action="Index" class="btn btn-success">
+                            <i class="bi bi-wallet2"></i> Back to My Account
+                        </a>
+                        <a asp-controller="Enrollment" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-list"></i> View My Enrollments
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    <small>This is an official receipt. Keep for your records.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .btn {
+            display: none;
+        }
+    }
+</style>

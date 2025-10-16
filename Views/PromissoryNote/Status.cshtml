@@ -1,0 +1,191 @@
+@model StudentEnrollmentSystem.Models.PromissoryNote
+@{
+    ViewData["Title"] = "Promissory Note Status";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header @(Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Approved ? "bg-success text-white" : Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Rejected ? "bg-danger text-white" : "bg-warning")">
+                    <h4><i class="bi bi-file-earmark-text"></i> Promissory Note Status</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        @if (Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Approved)
+                        {
+                            <h1 class="text-success"><i class="bi bi-check-circle-fill"></i></h1>
+                            <h4 class="text-success">Promissory Note Approved</h4>
+                            <p class="text-muted">Your promissory note has been approved. Your enrollment can now proceed.</p>
+                        }
+                        else if (Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Rejected)
+                        {
+                            <h1 class="text-danger"><i class="bi bi-x-circle-fill"></i></h1>
+                            <h4 class="text-danger">Promissory Note Rejected</h4>
+                            <p class="text-muted">Your promissory note was not approved. Please see the reason below.</p>
+                        }
+                        else
+                        {
+                            <h1 class="text-warning"><i class="bi bi-hourglass-split"></i></h1>
+                            <h4 class="text-warning">Promissory Note Pending Review</h4>
+                            <p class="text-muted">Your promissory note is awaiting review by the Campus Director.</p>
+                        }
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-3">Enrollment Information</h5>
+                    <div class="mb-3">
+                        <strong>Courses Enrolled (@Model.EnrollmentBatch.Enrollments.Count):</strong>
+                        <ul class="mt-2">
+                            @foreach (var enrollment in Model.EnrollmentBatch.Enrollments)
+                            {
+                                <li>@enrollment.Course.CourseCode - @enrollment.Course.Name (@enrollment.Course.Credits credits)</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Semester:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            @Model.EnrollmentBatch.Semester @Model.EnrollmentBatch.AcademicYear
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Total Credits:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-primary">@Model.EnrollmentBatch.TotalCredits credits</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Enrollment Status:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="badge bg-info">@Model.EnrollmentBatch.Status.ToString()</span>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-3">Promissory Note Details</h5>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Amount Covered:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="text-danger fs-5">₱@Model.AmountCovered.ToString("N2")</span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Repayment Deadline:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="text-danger">@Model.RepaymentDeadline.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Submitted Date:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            @Model.SubmittedDate.ToLocalTime().ToString("MMMM dd, yyyy hh:mm tt")
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Status:</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            @if (Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Approved)
+                            {
+                                <span class="badge bg-success">@Model.Status.ToString()</span>
+                            }
+                            else if (Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Rejected)
+                            {
+                                <span class="badge bg-danger">@Model.Status.ToString()</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@Model.Status.ToString()</span>
+                            }
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Reason))
+                    {
+                        <div class="mb-3">
+                            <strong>Your Reason:</strong>
+                            <div class="border rounded p-3 mt-2 bg-light">
+                                <p class="mb-0" style="white-space: pre-wrap;">@Model.Reason</p>
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.ReviewedDate.HasValue)
+                    {
+                        <hr>
+                        <h5 class="mb-3">Review Details</h5>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <strong>Reviewed By:</strong>
+                            </div>
+                            <div class="col-6 text-end">
+                                @(Model.ReviewedByCampusDirector?.FullName ?? "N/A")
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Review Date:</strong>
+                            </div>
+                            <div class="col-6 text-end">
+                                @Model.ReviewedDate.Value.ToLocalTime().ToString("MMMM dd, yyyy hh:mm tt")
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.DirectorComments))
+                        {
+                            <div class="mb-3">
+                                <strong>Campus Director's Comments:</strong>
+                                <div class="alert @(Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Approved ? "alert-success" : "alert-danger") mt-2">
+                                    <p class="mb-0" style="white-space: pre-wrap;">@Model.DirectorComments</p>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                    @if (Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Approved)
+                    {
+                        <div class="alert alert-success">
+                            <h6><i class="bi bi-exclamation-circle"></i> Important Reminder</h6>
+                            <p class="mb-0">Your promissory note has been approved. Please ensure you pay <strong>₱@Model.AmountCovered.ToString("N2")</strong> by <strong>@Model.RepaymentDeadline.ToString("MMMM dd, yyyy")</strong> to avoid enrollment cancellation or academic holds.</p>
+                        </div>
+                    }
+                    else if (Model.Status == StudentEnrollmentSystem.Models.Enums.PromissoryNoteStatus.Rejected)
+                    {
+                        <div class="alert alert-danger">
+                            <h6><i class="bi bi-exclamation-triangle"></i> What's Next?</h6>
+                            <p>Your promissory note was not approved. To proceed with your enrollment, you must make a payment of at least 30% of your balance.</p>
+                            <a asp-controller="StudentAccount" asp-action="MakePayment" asp-route-enrollmentId="@Model.EnrollmentBatchId" class="btn btn-success">
+                                <i class="bi bi-cash"></i> Make Payment Now
+                            </a>
+                        </div>
+                    }
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-controller="Enrollment" asp-action="Details" asp-route-id="@Model.EnrollmentBatchId" class="btn btn-primary">
+                            <i class="bi bi-eye"></i> View Enrollment Details
+                        </a>
+                        <a asp-controller="Enrollment" asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-list"></i> Back to My Enrollments
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

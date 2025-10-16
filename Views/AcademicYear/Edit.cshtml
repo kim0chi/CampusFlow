@@ -1,0 +1,57 @@
+@model StudentEnrollmentSystem.Models.AcademicYear
+@{
+    ViewData["Title"] = "Edit Academic Year";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="bi bi-pencil"></i> Edit Academic Year</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="CreatedDate" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Year" class="form-label">Academic Year</label>
+                        <input asp-for="Year" class="form-control" placeholder="e.g., 2024-2025" />
+                        <div class="form-text">Format: YYYY-YYYY (e.g., 2024-2025)</div>
+                        <span asp-validation-for="Year" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsActive" class="form-check-label">
+                            Active (available for enrollment)
+                        </label>
+                        <div class="form-text">Only active academic years will be shown to students during enrollment.</div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsCurrentYear" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsCurrentYear" class="form-check-label">
+                            Set as Current Year
+                        </label>
+                        <div class="form-text">The current year will be pre-selected for students. Only one year can be current at a time.</div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Save Changes
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
