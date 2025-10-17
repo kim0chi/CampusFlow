@@ -25,6 +25,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<PromissoryNote> PromissoryNotes { get; set; }
     public DbSet<EnrollmentPayment> EnrollmentPayments { get; set; }
     public DbSet<AcademicYear> AcademicYears { get; set; }
+    public DbSet<EnrollmentPeriod> EnrollmentPeriods { get; set; }
+    public DbSet<QuarterPeriod> QuarterPeriods { get; set; }
+    public DbSet<QuarterPaymentRequirement> QuarterPaymentRequirements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -247,6 +250,50 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<EnrollmentPayment>()
             .HasIndex(ep => ep.EnrollmentBatchId)
+            .IsUnique();
+
+        // Configure EnrollmentPeriod
+        builder.Entity<EnrollmentPeriod>()
+            .HasOne(ep => ep.CreatedByUser)
+            .WithMany()
+            .HasForeignKey(ep => ep.CreatedBy)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<EnrollmentPeriod>()
+            .HasIndex(ep => new { ep.Semester, ep.AcademicYear, ep.IsActive });
+
+        // Configure QuarterPeriod
+        builder.Entity<QuarterPeriod>()
+            .HasOne(qp => qp.CreatedByUser)
+            .WithMany()
+            .HasForeignKey(qp => qp.CreatedBy)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<QuarterPeriod>()
+            .HasIndex(qp => new { qp.Quarter, qp.Semester, qp.AcademicYear })
+            .IsUnique();
+
+        // Configure QuarterPaymentRequirement
+        builder.Entity<QuarterPaymentRequirement>()
+            .HasOne(qpr => qpr.Student)
+            .WithMany()
+            .HasForeignKey(qpr => qpr.StudentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<QuarterPaymentRequirement>()
+            .HasOne(qpr => qpr.QuarterPeriod)
+            .WithMany(qp => qp.PaymentRequirements)
+            .HasForeignKey(qpr => qpr.QuarterPeriodId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<QuarterPaymentRequirement>()
+            .HasOne(qpr => qpr.PromissoryNote)
+            .WithOne(pn => pn.QuarterPaymentRequirement)
+            .HasForeignKey<QuarterPaymentRequirement>(qpr => qpr.PromissoryNoteId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<QuarterPaymentRequirement>()
+            .HasIndex(qpr => new { qpr.StudentId, qpr.QuarterPeriodId })
             .IsUnique();
     }
 }

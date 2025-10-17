@@ -8,10 +8,12 @@ namespace StudentEnrollmentSystem.Services;
 public class EnrollmentWorkflowService : IEnrollmentWorkflowService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IQuarterPaymentService _quarterPaymentService;
 
-    public EnrollmentWorkflowService(ApplicationDbContext _context)
+    public EnrollmentWorkflowService(ApplicationDbContext _context, IQuarterPaymentService quarterPaymentService)
     {
         this._context = _context;
+        _quarterPaymentService = quarterPaymentService;
     }
 
     public async Task<EnrollmentBatch> CreateEnrollmentBatchAsync(string studentId, int[] courseIds, string semester, string academicYear, string? comments)
@@ -40,6 +42,31 @@ public class EnrollmentWorkflowService : IEnrollmentWorkflowService
         if (existingBatch != null)
         {
             throw new InvalidOperationException($"You already have a pending or active enrollment batch for {semester} {academicYear}.");
+        }
+
+        // Check quarter payment requirement
+        var meetsQuarterRequirement = await _quarterPaymentService.MeetsCurrentQuarterRequirementAsync(studentId);
+        if (!meetsQuarterRequirement)
+        {
+            var currentQuarter = await _quarterPaymentService.GetCurrentActiveQuarterPeriodAsync();
+            var requirement = currentQuarter != null
+                ? await _quarterPaymentService.GetStudentQuarterRequirementAsync(studentId, currentQuarter.Id)
+                : null;
+
+            if (requirement != null)
+            {
+                throw new InvalidOperationException(
+                    $"You must pay at least 30% of your total balance (₱{requirement.RequiredPaymentAmount:N2}) " +
+                    $"for the current quarter ({currentQuarter?.Quarter}) by {currentQuarter?.PaymentDeadline:MMM dd, yyyy} " +
+                    $"before enrolling. Your current balance is ₱{requirement.TotalBalanceAtQuarterStart:N2}. " +
+                    $"You can either make a payment or request a promissory note from the Campus Director.");
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    "You must meet the current quarter's payment requirement before enrolling. " +
+                    "Please pay at least 30% of your total balance or request a promissory note from the Campus Director.");
+            }
         }
 
         // Load all courses with prerequisites

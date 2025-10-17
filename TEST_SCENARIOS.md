@@ -1,7 +1,7 @@
 # Test Scenarios
-## Predefined Test Cases for Student Enrollment System
+## Predefined Test Cases for CampusFlow
 
-This document provides specific, reproducible test scenarios to verify all features of the Student Enrollment System.
+This document provides specific, reproducible test scenarios to verify all features of CampusFlow.
 
 ---
 

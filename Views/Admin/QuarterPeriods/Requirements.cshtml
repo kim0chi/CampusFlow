@@ -1,0 +1,222 @@
+@model StudentEnrollmentSystem.Models.QuarterPeriod
+
+@{
+    ViewData["Title"] = "Quarter Payment Requirements";
+    var paidCount = Model.PaymentRequirements?.Count(r => r.MeetsRequirement) ?? 0;
+    var pendingCount = Model.PaymentRequirements?.Count(r => !r.MeetsRequirement) ?? 0;
+    var totalCount = Model.PaymentRequirements?.Count ?? 0;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Payment Requirements</h2>
+            <p class="text-muted mb-0">
+                <strong>@Model.Quarter</strong> - @Model.Semester @Model.AcademicYear
+            </p>
+        </div>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Quarters
+        </a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">@totalCount</h3>
+                    <p class="mb-0">Total Students</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">@paidCount</h3>
+                    <p class="mb-0">Paid / Approved</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-danger">@pendingCount</h3>
+                    <p class="mb-0">Pending</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3>
+                        @if (totalCount > 0)
+                        {
+                            <text>@(((decimal)paidCount / totalCount * 100).ToString("F1"))%</text>
+                        }
+                        else
+                        {
+                            <text>0%</text>
+                        }
+                    </h3>
+                    <p class="mb-0">Compliance Rate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Quarter Information</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-sm">
+                        <tr>
+                            <th width="150">Period:</th>
+                            <td>@Model.StartDate.ToString("MMM dd") - @Model.EndDate.ToString("MMM dd, yyyy")</td>
+                        </tr>
+                        <tr>
+                            <th>Payment Deadline:</th>
+                            <td>
+                                <strong>@Model.PaymentDeadline.ToString("MMMM dd, yyyy")</strong>
+                                @if (Model.PaymentDeadline < DateTime.UtcNow)
+                                {
+                                    <span class="badge bg-danger ms-2">Past Due</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-sm">
+                        <tr>
+                            <th width="150">Status:</th>
+                            <td>
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactive</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Requirement:</th>
+                            <td><strong>30%</strong> of total balance</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.PaymentRequirements.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i>
+            No payment requirements have been generated yet. Go back and click "Generate Requirements" to create requirements for all students with balances.
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Email</th>
+                                <th>Total Balance</th>
+                                <th>Required (30%)</th>
+                                <th>Paid</th>
+                                <th>Status</th>
+                                <th>Promissory Note</th>
+                                <th>Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var requirement in Model.PaymentRequirements.OrderByDescending(r => r.MeetsRequirement).ThenBy(r => r.Student.LastName))
+                            {
+                                <tr class="@(requirement.MeetsRequirement ? "" : "table-warning")">
+                                    <td>
+                                        @requirement.Student?.FirstName @requirement.Student?.LastName
+                                        @if (requirement.Student?.StudentNumber != null)
+                                        {
+                                            <br /><small class="text-muted">@requirement.Student.StudentNumber</small>
+                                        }
+                                    </td>
+                                    <td>@requirement.Student?.Email</td>
+                                    <td>₱@requirement.TotalBalanceAtQuarterStart.ToString("N2")</td>
+                                    <td><strong>₱@requirement.RequiredPaymentAmount.ToString("N2")</strong></td>
+                                    <td>
+                                        ₱@requirement.ActualPaymentAmount.ToString("N2")
+                                        @if (requirement.ActualPaymentAmount > 0)
+                                        {
+                                            var percentage = (requirement.ActualPaymentAmount / requirement.TotalBalanceAtQuarterStart * 100);
+                                            <br /><small class="text-muted">(@percentage.ToString("F1")%)</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (requirement.MeetsRequirement)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Met
+                                            </span>
+                                        }
+                                        else if (requirement.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i> Pending
+                                            </span>
+                                        }
+                                        else if (requirement.Status == "Overdue")
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-exclamation-triangle"></i> Overdue
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@requirement.Status</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (requirement.HasPromissoryNote)
+                                        {
+                                            if (requirement.PromissoryNote != null)
+                                            {
+                                                <span class="badge bg-info">
+                                                    @requirement.PromissoryNote.Status
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info">Yes</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (requirement.PaidDate.HasValue)
+                                        {
+                                            @requirement.PaidDate.Value.ToString("MMM dd, yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

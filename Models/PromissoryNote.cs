@@ -36,8 +36,12 @@ public class PromissoryNote
     [StringLength(1000)]
     public string? DirectorComments { get; set; }
 
+    // Optional: Link to quarter payment requirement if this promissory note is for a quarter payment
+    public int? QuarterPaymentRequirementId { get; set; }
+
     // Navigation properties
     public EnrollmentBatch EnrollmentBatch { get; set; } = null!;
     public ApplicationUser Student { get; set; } = null!;
     public ApplicationUser? ReviewedByCampusDirector { get; set; }
+    public QuarterPaymentRequirement? QuarterPaymentRequirement { get; set; }
 }

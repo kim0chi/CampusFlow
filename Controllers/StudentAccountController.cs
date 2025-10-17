@@ -15,15 +15,18 @@ public class StudentAccountController : Controller
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IStudentAccountService _accountService;
+    private readonly IQuarterPaymentService _quarterPaymentService;
 
     public StudentAccountController(
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager,
-        IStudentAccountService accountService)
+        IStudentAccountService accountService,
+        IQuarterPaymentService quarterPaymentService)
     {
         _context = context;
         _userManager = userManager;
         _accountService = accountService;
+        _quarterPaymentService = quarterPaymentService;
     }
 
     // View Account Balance and Fees
@@ -200,5 +203,25 @@ public class StudentAccountController : Controller
         var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var random = new Random().Next(1000, 9999);
         return $"PAY-{timestamp}-{random}";
+    }
+
+    // View Quarter Payment Status
+    public async Task<IActionResult> QuarterPayments()
+    {
+        var userId = _userManager.GetUserId(User);
+
+        // Get all quarter payment requirements for this student
+        var requirements = await _quarterPaymentService.GetStudentQuarterRequirementsAsync(userId!);
+
+        // Get current quarter
+        var currentQuarter = await _quarterPaymentService.GetCurrentActiveQuarterPeriodAsync();
+
+        // Get total balance across all semesters
+        var totalBalance = await _accountService.GetStudentTotalBalanceAsync(userId!);
+
+        ViewBag.CurrentQuarter = currentQuarter;
+        ViewBag.TotalBalance = totalBalance;
+
+        return View(requirements);
     }
 }

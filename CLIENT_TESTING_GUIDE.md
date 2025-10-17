@@ -1,7 +1,7 @@
 # Client Testing Guide
-## Student Enrollment System - Comprehensive Feature Testing
+## CampusFlow - Comprehensive Feature Testing
 
-This guide will walk you through testing **all features** of the Student Enrollment System, including enrollment workflows, prerequisite checking, prospectus tracking, grading, and administrative functions.
+This guide will walk you through testing **all features** of CampusFlow, including enrollment workflows, prerequisite checking, prospectus tracking, grading, and administrative functions.
 
 ---
 

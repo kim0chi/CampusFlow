@@ -2,7 +2,7 @@
 
 ## ✅ Feature Complete!
 
-A comprehensive user profile system has been added to the Student Enrollment System with full SQLite database support.
+A comprehensive user profile system has been added to CampusFlow with full SQLite database support.
 
 ## 🎯 Features Added
 

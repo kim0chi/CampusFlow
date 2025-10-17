@@ -1,0 +1,134 @@
+@model StudentEnrollmentSystem.Models.QuarterPeriod
+
+@{
+    ViewData["Title"] = "Create Quarter Period";
+}
+
+<div class="container mt-4">
+    <h2>Create Quarter Period</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Quarter" class="form-label">Quarter</label>
+                            <select asp-for="Quarter" class="form-select">
+                                <option value="">-- Select Quarter --</option>
+                                <option value="0">Prelim</option>
+                                <option value="1">Midterm</option>
+                                <option value="2">Semi-Final</option>
+                                <option value="3">Finals</option>
+                            </select>
+                            <span asp-validation-for="Quarter" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Semester" class="form-label">Semester</label>
+                            <select asp-for="Semester" class="form-select">
+                                <option value="">-- Select Semester --</option>
+                                <option value="First Semester">First Semester</option>
+                                <option value="Second Semester">Second Semester</option>
+                                <option value="Summer">Summer</option>
+                            </select>
+                            <span asp-validation-for="Semester" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AcademicYear" class="form-label">Academic Year</label>
+                            <input asp-for="AcademicYear" class="form-control" placeholder="e.g., 2024-2025" />
+                            <span asp-validation-for="AcademicYear" class="text-danger"></span>
+                            <div class="form-text">Format: YYYY-YYYY (e.g., 2024-2025)</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartDate" class="form-label">Start Date</label>
+                                <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                                <div class="form-text">When this quarter begins</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EndDate" class="form-label">End Date</label>
+                                <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                                <div class="form-text">When this quarter ends</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PaymentDeadline" class="form-label">Payment Deadline</label>
+                            <input asp-for="PaymentDeadline" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="PaymentDeadline" class="text-danger"></span>
+                            <div class="form-text">Students must pay 30% of their balance by this date</div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="IsActive" type="checkbox" class="form-check-input" checked />
+                            <label asp-for="IsActive" class="form-check-label">Active</label>
+                            <div class="form-text">Only active quarters enforce payment requirements</div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>How it works:</strong>
+                            <ol class="mb-0 mt-2">
+                                <li>Create the quarter period with dates</li>
+                                <li>Click "Generate Requirements" to calculate 30% payment for all students with balances</li>
+                                <li>Students will be blocked from enrolling if they haven't met the payment requirement</li>
+                                <li>Students can either pay or request a promissory note from the Campus Director</li>
+                            </ol>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create Quarter Period
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-lightbulb"></i> Tips
+                    </h5>
+                    <ul class="small">
+                        <li><strong>Quarter Order:</strong> Typically: Prelim → Midterm → Semi-Final → Finals</li>
+                        <li><strong>Payment Deadline:</strong> Should be early in the quarter (e.g., first 2 weeks)</li>
+                        <li><strong>30% Requirement:</strong> Calculated on total accumulated balance, not just current semester</li>
+                        <li><strong>Generate Requirements:</strong> After creating, go back to the list and click "Generate Requirements"</li>
+                        <li><strong>Promissory Notes:</strong> Students who can't pay can request from Campus Director</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card bg-warning bg-opacity-10 mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-exclamation-triangle"></i> Important
+                    </h5>
+                    <p class="small mb-0">
+                        Make sure the payment deadline is realistic and gives students enough time to arrange payment or request a promissory note.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

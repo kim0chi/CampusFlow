@@ -84,6 +84,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vRWRpdFN0dWRlbnRBY2FkZW1pY3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/EnrollmentPeriods/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vRW5yb2xsbWVudFBlcmlvZHMvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/EnrollmentPeriods/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vRW5yb2xsbWVudFBlcmlvZHMvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/EnrollmentPeriods/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vRW5yb2xsbWVudFBlcmlvZHMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/ManageCourseEnrollments.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vTWFuYWdlQ291cnNlRW5yb2xsbWVudHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -114,6 +126,22 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/PendingRegistrations.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUGVuZGluZ1JlZ2lzdHJhdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/QuarterPeriods/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUXVhcnRlclBlcmlvZHMvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/QuarterPeriods/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUXVhcnRlclBlcmlvZHMvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/QuarterPeriods/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUXVhcnRlclBlcmlvZHMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/QuarterPeriods/Requirements.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUXVhcnRlclBlcmlvZHMvUmVxdWlyZW1lbnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Admin/Users.cshtml]
@@ -236,6 +264,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Shared/_Sidebar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19TaWRlYmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -250,6 +282,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/StudentAccount/PaymentReceipt.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3R1ZGVudEFjY291bnQvUGF5bWVudFJlY2VpcHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/StudentAccount/QuarterPayments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3R1ZGVudEFjY291bnQvUXVhcnRlclBheW1lbnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/kimo/Documents/Code/StudentEnrollmentSystem/Views/_ViewImports.cshtml]

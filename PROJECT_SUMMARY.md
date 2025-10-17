@@ -1,4 +1,4 @@
-# Student Enrollment System - Project Summary
+# CampusFlow - Project Summary
 
 ## 📋 Overview
 

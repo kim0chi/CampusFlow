@@ -1,7 +1,7 @@
 # Philippine Features Testing Guide
-## Student Enrollment System - Philippine-Specific Features
+## CampusFlow - Philippine-Specific Features
 
-This focused guide covers testing of all Philippine-specific features implemented in the Student Enrollment System.
+This focused guide covers testing of all Philippine-specific features implemented in CampusFlow.
 
 ---
 

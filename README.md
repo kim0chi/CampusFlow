@@ -1,4 +1,4 @@
-# Student Enrollment System
+# CampusFlow
 
 A comprehensive ASP.NET Core 9.0 MVC application for managing student course enrollments with a multi-stage approval workflow.
 

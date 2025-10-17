@@ -42,7 +42,7 @@
                     <dd class="col-sm-8"><code>@Model.Student.StudentNumber</code></dd>
 
                     <dt class="col-sm-4"><i class="bi bi-building"></i> Department:</dt>
-                    <dd class="col-sm-8"><span class="badge bg-info">@Model.Student.Department</span></dd>
+                    <dd class="col-sm-8"><span class="badge bg-info">@(Model.Student.Department?.Name ?? "Not Assigned")</span></dd>
 
                     <dt class="col-sm-4"><i class="bi bi-envelope"></i> Email:</dt>
                     <dd class="col-sm-8"><a href="mailto:@Model.Student.Email">@Model.Student.Email</a></dd>
@@ -98,7 +98,7 @@
                                     <tr>
                                         <td><strong>@enrollment.Course.CourseCode</strong></td>
                                         <td>@enrollment.Course.Name</td>
-                                        <td><span class="badge bg-info">@enrollment.Course.Department</span></td>
+                                        <td><span class="badge bg-info">@(enrollment.Course.Department ?? "N/A")</span></td>
                                         <td><span class="badge bg-warning text-dark">@enrollment.Course.Credits</span></td>
                                         <td>@enrollment.Course.EnrolledCount / @enrollment.Course.Capacity students</td>
                                     </tr>

@@ -1,0 +1,148 @@
+@model StudentEnrollmentSystem.Models.EnrollmentPeriod
+
+@{
+    ViewData["Title"] = "Edit Enrollment Period";
+}
+
+<div class="container mt-4">
+    <h2>Edit Enrollment Period</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedBy" />
+                        <input type="hidden" asp-for="CreatedDate" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Semester" class="form-label">Semester</label>
+                            <select asp-for="Semester" class="form-select">
+                                <option value="">-- Select Semester --</option>
+                                <option value="First Semester">First Semester</option>
+                                <option value="Second Semester">Second Semester</option>
+                                <option value="Summer">Summer</option>
+                            </select>
+                            <span asp-validation-for="Semester" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AcademicYear" class="form-label">Academic Year</label>
+                            <input asp-for="AcademicYear" class="form-control" placeholder="e.g., 2024-2025" />
+                            <span asp-validation-for="AcademicYear" class="text-danger"></span>
+                            <div class="form-text">Format: YYYY-YYYY (e.g., 2024-2025)</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="OpenDate" class="form-label">Open Date</label>
+                                <input asp-for="OpenDate" type="datetime-local" class="form-control"
+                                       value="@Model.OpenDate.ToString("yyyy-MM-ddTHH:mm")" />
+                                <span asp-validation-for="OpenDate" class="text-danger"></span>
+                                <div class="form-text">When enrollment opens</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CloseDate" class="form-label">Close Date</label>
+                                <input asp-for="CloseDate" type="datetime-local" class="form-control"
+                                       value="@Model.CloseDate.ToString("yyyy-MM-ddTHH:mm")" />
+                                <span asp-validation-for="CloseDate" class="text-danger"></span>
+                                <div class="form-text">When enrollment closes</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label">Active</label>
+                            <div class="form-text">Only active periods are enforced</div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Warning:</strong> Changes to enrollment periods take effect immediately. Students currently enrolled may be affected if you change the dates.
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Period Information</h5>
+                    <table class="table table-sm">
+                        <tr>
+                            <th width="150">Created By:</th>
+                            <td>@(Model.CreatedByUser?.Email ?? "System")</td>
+                        </tr>
+                        <tr>
+                            <th>Created Date:</th>
+                            <td>@Model.CreatedDate.ToString("MMM dd, yyyy hh:mm tt")</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-info-circle"></i> Status
+                    </h5>
+                    @{
+                        var now = DateTime.UtcNow;
+                        var isCurrentlyOpen = Model.IsActive && now >= Model.OpenDate && now <= Model.CloseDate;
+                        var isPast = now > Model.CloseDate;
+                        var isFuture = now < Model.OpenDate;
+                    }
+
+                    @if (!Model.IsActive)
+                    {
+                        <div class="alert alert-secondary">
+                            <strong>Inactive</strong><br />
+                            This period is not being enforced.
+                        </div>
+                    }
+                    else if (isCurrentlyOpen)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Currently Open</strong><br />
+                            Students can enroll right now.
+                        </div>
+                    }
+                    else if (isPast)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Closed</strong><br />
+                            This enrollment period has ended.
+                        </div>
+                    }
+                    else if (isFuture)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Upcoming</strong><br />
+                            Opens on @Model.OpenDate.ToString("MMM dd, yyyy")
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

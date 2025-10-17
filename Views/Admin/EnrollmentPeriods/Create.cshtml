@@ -1,0 +1,98 @@
+@model StudentEnrollmentSystem.Models.EnrollmentPeriod
+
+@{
+    ViewData["Title"] = "Create Enrollment Period";
+}
+
+<div class="container mt-4">
+    <h2>Create Enrollment Period</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Semester" class="form-label">Semester</label>
+                            <select asp-for="Semester" class="form-select">
+                                <option value="">-- Select Semester --</option>
+                                <option value="First Semester">First Semester</option>
+                                <option value="Second Semester">Second Semester</option>
+                                <option value="Summer">Summer</option>
+                            </select>
+                            <span asp-validation-for="Semester" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AcademicYear" class="form-label">Academic Year</label>
+                            <input asp-for="AcademicYear" class="form-control" placeholder="e.g., 2024-2025" />
+                            <span asp-validation-for="AcademicYear" class="text-danger"></span>
+                            <div class="form-text">Format: YYYY-YYYY (e.g., 2024-2025)</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="OpenDate" class="form-label">Open Date</label>
+                                <input asp-for="OpenDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="OpenDate" class="text-danger"></span>
+                                <div class="form-text">When enrollment opens</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CloseDate" class="form-label">Close Date</label>
+                                <input asp-for="CloseDate" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="CloseDate" class="text-danger"></span>
+                                <div class="form-text">When enrollment closes</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input asp-for="IsActive" type="checkbox" class="form-check-input" checked />
+                            <label asp-for="IsActive" class="form-check-label">Active</label>
+                            <div class="form-text">Only active periods are enforced</div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Note:</strong> Students will only be able to enroll during the dates specified. Make sure the dates are correct before activating.
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create Period
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-lightbulb"></i> Tips
+                    </h5>
+                    <ul class="small">
+                        <li>Set the open date to when you want students to start enrolling</li>
+                        <li>Set the close date to the enrollment deadline</li>
+                        <li>You can create multiple periods for different semesters</li>
+                        <li>Only active periods will be enforced</li>
+                        <li>Students will see a clear message if they try to enroll outside the period</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

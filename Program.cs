@@ -28,6 +28,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 builder.Services.AddScoped<IEnrollmentWorkflowService, EnrollmentWorkflowService>();
 builder.Services.AddScoped<IStudentNumberService, StudentNumberService>();
 builder.Services.AddScoped<IStudentAccountService, StudentAccountService>();
+builder.Services.AddScoped<IQuarterPaymentService, QuarterPaymentService>();
 
 builder.Services.AddControllersWithViews(options =>
 {

@@ -186,4 +186,4 @@ If ports 5000/5001 are in use:
 6. Verify course capacity limits
 7. Check that enrolled count increments only after final approval
 
-Enjoy testing the Student Enrollment System!
+Enjoy testing CampusFlow!

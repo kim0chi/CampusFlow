@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "6oWueo0Jx/uh80MbOvnleGY6eRja1xzJ9R1E3jU9wNk=",
+  "Hash": "Fr2aBchJET44P9VqMwVjeuxNNkW4VoWS9+6S34UhfLI=",
   "Source": "StudentEnrollmentSystem",
   "BasePath": "_content/StudentEnrollmentSystem",
   "Mode": "Default",
@@ -1739,12 +1739,12 @@
       "OriginalItemSpec": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css"
     },
     {
-      "Identity": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-fr7q2aak1r.gz",
+      "Identity": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-q97sz9scfc.gz",
       "SourceId": "StudentEnrollmentSystem",
       "SourceType": "Discovered",
       "ContentRoot": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/StudentEnrollmentSystem",
-      "RelativePath": "js/site#[.{fingerprint=fr7q2aak1r}]?.js.gz",
+      "RelativePath": "js/site#[.{fingerprint=q97sz9scfc}]?.js.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -1753,8 +1753,8 @@
       "RelatedAsset": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/js/site.js",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "46o2cvhh9a",
-      "Integrity": "3J6yc3/h+VpGRYP4X1MbS4h876/WwSnG6x8l/qtKzMU=",
+      "Fingerprint": "n2s31koyao",
+      "Integrity": "3yE5fDt7tmEKL6h1PAp4QtMguUyjINL+cgRrDsaE7is=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/js/site.js"
@@ -2201,12 +2201,12 @@
       "OriginalItemSpec": "/home/kimo/.nuget/packages/microsoft.aspnetcore.identity.ui/9.0.8/staticwebassets/V5/lib/bootstrap/dist/css/bootstrap.min.css.map"
     },
     {
-      "Identity": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-lugek5hnai.gz",
+      "Identity": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-ugyolahjor.gz",
       "SourceId": "StudentEnrollmentSystem",
       "SourceType": "Discovered",
       "ContentRoot": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/",
       "BasePath": "_content/StudentEnrollmentSystem",
-      "RelativePath": "css/site#[.{fingerprint=lugek5hnai}]?.css.gz",
+      "RelativePath": "css/site#[.{fingerprint=ugyolahjor}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -2215,8 +2215,8 @@
       "RelatedAsset": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/css/site.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "r1y2p2iwg7",
-      "Integrity": "IcZ0w9Xp5vqrrmi/ED13UsQXBwOx73ApewVrDYt6/j0=",
+      "Fingerprint": "6ueuglokaq",
+      "Integrity": "nqp3DdhPhDhufVLRL8OGhJh8EjO6OlM2X2GKhhQ29pc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/css/site.css"
@@ -4042,8 +4042,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "lugek5hnai",
-      "Integrity": "zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo=",
+      "Fingerprint": "ugyolahjor",
+      "Integrity": "gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/css/site.css"
@@ -4084,8 +4084,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "fr7q2aak1r",
-      "Integrity": "y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=",
+      "Fingerprint": "q97sz9scfc",
+      "Integrity": "MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/js/site.js"
@@ -5375,12 +5375,12 @@
   "Endpoints": [
     {
       "Route": "css/site.css",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-lugek5hnai.gz",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-ugyolahjor.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.003194888179"
+          "Quality": "0.000496277916"
         }
       ],
       "ResponseHeaders": [
@@ -5390,15 +5390,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "312"
+          "Value": "2014"
         },
         {
           "Name": "ETag",
-          "Value": "\"IcZ0w9Xp5vqrrmi/ED13UsQXBwOx73ApewVrDYt6/j0=\""
+          "Value": "\"nqp3DdhPhDhufVLRL8OGhJh8EjO6OlM2X2GKhhQ29pc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:29:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5418,13 +5418,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo=\""
+          "Value": "W/\"gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo="
+          "Value": "sha256-gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM="
         }
       ]
     },
@@ -5439,7 +5439,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "637"
+          "Value": "7719"
         },
         {
           "Name": "Content-Type",
@@ -5447,11 +5447,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo=\""
+          "Value": "\"gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:29:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5461,13 +5461,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo="
+          "Value": "sha256-gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM="
         }
       ]
     },
     {
       "Route": "css/site.css.gz",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-lugek5hnai.gz",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-ugyolahjor.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -5476,7 +5476,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "312"
+          "Value": "2014"
         },
         {
           "Name": "Content-Type",
@@ -5484,11 +5484,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"IcZ0w9Xp5vqrrmi/ED13UsQXBwOx73ApewVrDYt6/j0=\""
+          "Value": "\"nqp3DdhPhDhufVLRL8OGhJh8EjO6OlM2X2GKhhQ29pc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:29:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5506,18 +5506,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-IcZ0w9Xp5vqrrmi/ED13UsQXBwOx73ApewVrDYt6/j0="
+          "Value": "sha256-nqp3DdhPhDhufVLRL8OGhJh8EjO6OlM2X2GKhhQ29pc="
         }
       ]
     },
     {
-      "Route": "css/site.lugek5hnai.css",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-lugek5hnai.gz",
+      "Route": "css/site.ugyolahjor.css",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-ugyolahjor.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.003194888179"
+          "Quality": "0.000496277916"
         }
       ],
       "ResponseHeaders": [
@@ -5527,15 +5527,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "312"
+          "Value": "2014"
         },
         {
           "Name": "ETag",
-          "Value": "\"IcZ0w9Xp5vqrrmi/ED13UsQXBwOx73ApewVrDYt6/j0=\""
+          "Value": "\"nqp3DdhPhDhufVLRL8OGhJh8EjO6OlM2X2GKhhQ29pc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:29:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5555,13 +5555,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo=\""
+          "Value": "W/\"gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "lugek5hnai"
+          "Value": "ugyolahjor"
         },
         {
           "Name": "label",
@@ -5569,12 +5569,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo="
+          "Value": "sha256-gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM="
         }
       ]
     },
     {
-      "Route": "css/site.lugek5hnai.css",
+      "Route": "css/site.ugyolahjor.css",
       "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/css/site.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -5584,7 +5584,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "637"
+          "Value": "7719"
         },
         {
           "Name": "Content-Type",
@@ -5592,11 +5592,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo=\""
+          "Value": "\"gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:29:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5606,7 +5606,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "lugek5hnai"
+          "Value": "ugyolahjor"
         },
         {
           "Name": "label",
@@ -5614,13 +5614,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-zeR5PHeeHbxfGkL8WV86OzdoF6UnjuCmnagaocD+cbo="
+          "Value": "sha256-gs5G4N5nJBOP3YdVo9KHGsR57Z1xBo+HvDWx7+mFaDM="
         }
       ]
     },
     {
-      "Route": "css/site.lugek5hnai.css.gz",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-lugek5hnai.gz",
+      "Route": "css/site.ugyolahjor.css.gz",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-ugyolahjor.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -5629,7 +5629,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "312"
+          "Value": "2014"
         },
         {
           "Name": "Content-Type",
@@ -5637,11 +5637,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"IcZ0w9Xp5vqrrmi/ED13UsQXBwOx73ApewVrDYt6/j0=\""
+          "Value": "\"nqp3DdhPhDhufVLRL8OGhJh8EjO6OlM2X2GKhhQ29pc=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:29:51 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -5659,7 +5659,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "lugek5hnai"
+          "Value": "ugyolahjor"
         },
         {
           "Name": "label",
@@ -5667,7 +5667,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-IcZ0w9Xp5vqrrmi/ED13UsQXBwOx73ApewVrDYt6/j0="
+          "Value": "sha256-nqp3DdhPhDhufVLRL8OGhJh8EjO6OlM2X2GKhhQ29pc="
         }
       ]
     },
@@ -14501,13 +14501,13 @@
       ]
     },
     {
-      "Route": "js/site.fr7q2aak1r.js",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-fr7q2aak1r.gz",
+      "Route": "js/site.js",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-q97sz9scfc.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.005319148936"
+          "Quality": "0.001020408163"
         }
       ],
       "ResponseHeaders": [
@@ -14517,19 +14517,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "187"
+          "Value": "979"
         },
         {
           "Name": "ETag",
-          "Value": "\"3J6yc3/h+VpGRYP4X1MbS4h876/WwSnG6x8l/qtKzMU=\""
+          "Value": "\"3yE5fDt7tmEKL6h1PAp4QtMguUyjINL+cgRrDsaE7is=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:30:25 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Encoding",
@@ -14545,26 +14545,18 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
+          "Value": "W/\"MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM=\""
         }
       ],
       "EndpointProperties": [
         {
-          "Name": "fingerprint",
-          "Value": "fr7q2aak1r"
-        },
-        {
-          "Name": "label",
-          "Value": "js/site.js"
-        },
-        {
           "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
+          "Value": "sha256-MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM="
         }
       ]
     },
     {
-      "Route": "js/site.fr7q2aak1r.js",
+      "Route": "js/site.js",
       "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/js/site.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -14574,7 +14566,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "227"
+          "Value": "3440"
         },
         {
           "Name": "Content-Type",
@@ -14582,11 +14574,156 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
+          "Value": "\"MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:30:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.js.gz",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-q97sz9scfc.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "979"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3yE5fDt7tmEKL6h1PAp4QtMguUyjINL+cgRrDsaE7is=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 06:30:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-3yE5fDt7tmEKL6h1PAp4QtMguUyjINL+cgRrDsaE7is="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.q97sz9scfc.js",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-q97sz9scfc.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001020408163"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "979"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3yE5fDt7tmEKL6h1PAp4QtMguUyjINL+cgRrDsaE7is=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 06:30:25 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "q97sz9scfc"
+        },
+        {
+          "Name": "label",
+          "Value": "js/site.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM="
+        }
+      ]
+    },
+    {
+      "Route": "js/site.q97sz9scfc.js",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/js/site.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3440"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 17 Oct 2025 06:30:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14596,7 +14733,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "fr7q2aak1r"
+          "Value": "q97sz9scfc"
         },
         {
           "Name": "label",
@@ -14604,13 +14741,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
+          "Value": "sha256-MmVr9YzMKkGVgf1rMyctzWcjuAPqKGTbmGdAmjmL4HM="
         }
       ]
     },
     {
-      "Route": "js/site.fr7q2aak1r.js.gz",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-fr7q2aak1r.gz",
+      "Route": "js/site.q97sz9scfc.js.gz",
+      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-q97sz9scfc.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -14619,7 +14756,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "187"
+          "Value": "979"
         },
         {
           "Name": "Content-Type",
@@ -14627,11 +14764,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"3J6yc3/h+VpGRYP4X1MbS4h876/WwSnG6x8l/qtKzMU=\""
+          "Value": "\"3yE5fDt7tmEKL6h1PAp4QtMguUyjINL+cgRrDsaE7is=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
+          "Value": "Fri, 17 Oct 2025 06:30:25 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -14649,7 +14786,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "fr7q2aak1r"
+          "Value": "q97sz9scfc"
         },
         {
           "Name": "label",
@@ -14657,144 +14794,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-3J6yc3/h+VpGRYP4X1MbS4h876/WwSnG6x8l/qtKzMU="
-        }
-      ]
-    },
-    {
-      "Route": "js/site.js",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-fr7q2aak1r.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.005319148936"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "187"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"3J6yc3/h+VpGRYP4X1MbS4h876/WwSnG6x8l/qtKzMU=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
-        }
-      ]
-    },
-    {
-      "Route": "js/site.js",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/wwwroot/js/site.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "227"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-y/Ngd8W21UpuCUhEqGbUKDEqFnNfTjAfb24GhJJGUyM="
-        }
-      ]
-    },
-    {
-      "Route": "js/site.js.gz",
-      "AssetFile": "/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-fr7q2aak1r.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "187"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"3J6yc3/h+VpGRYP4X1MbS4h876/WwSnG6x8l/qtKzMU=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 06 Oct 2025 17:37:49 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-3J6yc3/h+VpGRYP4X1MbS4h876/WwSnG6x8l/qtKzMU="
+          "Value": "sha256-3yE5fDt7tmEKL6h1PAp4QtMguUyjINL+cgRrDsaE7is="
         }
       ]
     },

@@ -40,17 +40,15 @@ public class DashboardController : Controller
 
         if (primaryRole == "Student")
         {
-            // Show enrollment batches instead of individual enrollments
-            var enrollmentBatches = await _context.EnrollmentBatches
-                .Include(eb => eb.Enrollments)
-                .ThenInclude(e => e.Course)
-                .Include(eb => eb.ApprovalSteps)
-                .Where(eb => eb.StudentId == user!.Id)
-                .OrderByDescending(eb => eb.SubmittedDate)
+            // Get individual enrollments for dashboard display
+            var enrollments = await _context.Enrollments
+                .Include(e => e.Course)
+                .Where(e => e.StudentId == user!.Id)
+                .OrderByDescending(e => e.SubmittedDate)
                 .Take(10)
                 .ToListAsync();
 
-            ViewBag.EnrollmentBatches = enrollmentBatches;
+            viewModel.MyEnrollments = enrollments;
         }
         else if (primaryRole != "Admin")
         {

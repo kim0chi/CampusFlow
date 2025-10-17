@@ -211,9 +211,7 @@
 /home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/nezrqnk58p-muycvpuwrr.gz
 /home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/v0zgfp0y55-87fc7y1x7t.gz
 /home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/yfc7ypekbg-mlv21k5csn.gz
-/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-lugek5hnai.gz
 /home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/vdfv5rtmid-61n19gt1b8.gz
-/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-fr7q2aak1r.gz
 /home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bf2atov87x-bqjiyaj88i.gz
 /home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/g8h2bck3pn-c2jlpeoesf.gz
 /home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/5lkjp7qy29-erw9l3u2r3.gz
@@ -410,3 +408,6 @@
 /home/kimo/Documents/Code/StudentEnrollmentSystem/bin/Debug/net9.0/zh-Hans/Microsoft.CodeAnalysis.Scripting.resources.dll
 /home/kimo/Documents/Code/StudentEnrollmentSystem/bin/Debug/net9.0/zh-Hant/Microsoft.CodeAnalysis.Scripting.resources.dll
 /home/kimo/Documents/Code/StudentEnrollmentSystem/bin/Debug/net9.0/app.db
+/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/StudentEnrollmentSystem.sourcelink.json
+/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/bo1wluexu4-ugyolahjor.gz
+/home/kimo/Documents/Code/StudentEnrollmentSystem/obj/Debug/net9.0/compressed/67o0zb98mf-q97sz9scfc.gz

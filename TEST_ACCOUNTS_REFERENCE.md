@@ -1,6 +1,6 @@
 # Test Accounts Reference Card
 
-Quick reference for all test accounts in the Student Enrollment System.
+Quick reference for all test accounts in CampusFlow.
 
 ---
 

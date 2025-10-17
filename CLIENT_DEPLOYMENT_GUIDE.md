@@ -1,4 +1,4 @@
-# Client Deployment Guide - Student Enrollment System
+# Client Deployment Guide - CampusFlow
 
 This guide explains how to prepare a deployment package for client testing using **Option 2: Standalone Published Application**.
 
@@ -148,11 +148,11 @@ Create a delivery package that includes:
 ### Email Template for Client
 
 ```
-Subject: Student Enrollment System - Ready for Testing
+Subject: CampusFlow - Ready for Testing
 
 Dear [Client Name],
 
-The Student Enrollment System is ready for your testing and review.
+CampusFlow is ready for your testing and review.
 
 SYSTEM FEATURES:
 - Student registration with approval workflow

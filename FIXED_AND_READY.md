@@ -235,4 +235,4 @@ The application is fully functional and ready for testing. All authentication is
 **Access**: https://localhost:5001
 **First Login**: `john.doe@student.edu` / `Student123!`
 
-Enjoy testing the Student Enrollment System! 🎓
+Enjoy testing CampusFlow! 🎓

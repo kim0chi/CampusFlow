@@ -628,6 +628,47 @@ namespace StudentEnrollmentSystem.Data.Migrations
                     b.ToTable("EnrollmentPayments");
                 });
 
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.EnrollmentPeriod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AcademicYear")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CloseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("OpenDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Semester")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("Semester", "AcademicYear", "IsActive");
+
+                    b.ToTable("EnrollmentPeriods");
+                });
+
             modelBuilder.Entity("StudentEnrollmentSystem.Models.Fee", b =>
                 {
                     b.Property<int>("Id")
@@ -819,6 +860,9 @@ namespace StudentEnrollmentSystem.Data.Migrations
                     b.Property<int>("EnrollmentBatchId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("QuarterPaymentRequirementId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -852,6 +896,110 @@ namespace StudentEnrollmentSystem.Data.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("PromissoryNotes");
+                });
+
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.QuarterPaymentRequirement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("ActualPaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("HasPromissoryNote")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("MeetsRequirement")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("PaidDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("PromissoryNoteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("QuarterPeriodId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("RequiredPaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("TotalBalanceAtQuarterStart")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PromissoryNoteId")
+                        .IsUnique();
+
+                    b.HasIndex("QuarterPeriodId");
+
+                    b.HasIndex("StudentId", "QuarterPeriodId")
+                        .IsUnique();
+
+                    b.ToTable("QuarterPaymentRequirements");
+                });
+
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.QuarterPeriod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AcademicYear")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("PaymentDeadline")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Quarter")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Semester")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("Quarter", "Semester", "AcademicYear")
+                        .IsUnique();
+
+                    b.ToTable("QuarterPeriods");
                 });
 
             modelBuilder.Entity("StudentEnrollmentSystem.Models.StudentAccount", b =>
@@ -1069,6 +1217,16 @@ namespace StudentEnrollmentSystem.Data.Migrations
                     b.Navigation("PromissoryNote");
                 });
 
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.EnrollmentPeriod", b =>
+                {
+                    b.HasOne("StudentEnrollmentSystem.Models.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("CreatedByUser");
+                });
+
             modelBuilder.Entity("StudentEnrollmentSystem.Models.Fee", b =>
                 {
                     b.HasOne("StudentEnrollmentSystem.Models.ApplicationUser", "IssuedBy")
@@ -1173,6 +1331,42 @@ namespace StudentEnrollmentSystem.Data.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.QuarterPaymentRequirement", b =>
+                {
+                    b.HasOne("StudentEnrollmentSystem.Models.PromissoryNote", "PromissoryNote")
+                        .WithOne("QuarterPaymentRequirement")
+                        .HasForeignKey("StudentEnrollmentSystem.Models.QuarterPaymentRequirement", "PromissoryNoteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("StudentEnrollmentSystem.Models.QuarterPeriod", "QuarterPeriod")
+                        .WithMany("PaymentRequirements")
+                        .HasForeignKey("QuarterPeriodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudentEnrollmentSystem.Models.ApplicationUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PromissoryNote");
+
+                    b.Navigation("QuarterPeriod");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.QuarterPeriod", b =>
+                {
+                    b.HasOne("StudentEnrollmentSystem.Models.ApplicationUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("CreatedByUser");
+                });
+
             modelBuilder.Entity("StudentEnrollmentSystem.Models.StudentAccount", b =>
                 {
                     b.HasOne("StudentEnrollmentSystem.Models.ApplicationUser", "Student")
@@ -1222,6 +1416,16 @@ namespace StudentEnrollmentSystem.Data.Migrations
             modelBuilder.Entity("StudentEnrollmentSystem.Models.Program", b =>
                 {
                     b.Navigation("ProgramCourses");
+                });
+
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.PromissoryNote", b =>
+                {
+                    b.Navigation("QuarterPaymentRequirement");
+                });
+
+            modelBuilder.Entity("StudentEnrollmentSystem.Models.QuarterPeriod", b =>
+                {
+                    b.Navigation("PaymentRequirements");
                 });
 
             modelBuilder.Entity("StudentEnrollmentSystem.Models.StudentAccount", b =>

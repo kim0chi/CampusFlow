@@ -1,0 +1,296 @@
+@using Microsoft.AspNetCore.Identity
+@using StudentEnrollmentSystem.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    bool IsActive(string controller, string action = "")
+    {
+        if (string.IsNullOrEmpty(action))
+        {
+            return currentController.Equals(controller, StringComparison.OrdinalIgnoreCase);
+        }
+        return currentController.Equals(controller, StringComparison.OrdinalIgnoreCase)
+            && currentAction.Equals(action, StringComparison.OrdinalIgnoreCase);
+    }
+
+    bool IsControllerActive(params string[] controllers)
+    {
+        return controllers.Any(c => currentController.Equals(c, StringComparison.OrdinalIgnoreCase));
+    }
+}
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-brand">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Dashboard" asp-action="Index">
+                    <i class="bi bi-mortarboard-fill"></i>
+                    <span>CampusFlow</span>
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-mortarboard-fill"></i>
+                    <span>CampusFlow</span>
+                </a>
+            }
+        </div>
+    </div>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var roles = await UserManager.GetRolesAsync(user!);
+        var primaryRole = roles.FirstOrDefault() ?? "User";
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="user-info">
+                <div class="user-name">@user.FirstName @user.LastName</div>
+                <div class="user-role">@primaryRole</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <!-- Dashboard -->
+            <a class="menu-item @(IsActive("Dashboard", "Index") ? "active" : "")"
+               asp-controller="Dashboard" asp-action="Index">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- My Profile -->
+            <a class="menu-item @(IsActive("Profile") ? "active" : "")"
+               asp-controller="Profile" asp-action="Index">
+                <i class="bi bi-person-circle"></i>
+                <span>My Profile</span>
+            </a>
+
+            @if (User.IsInRole("Student"))
+            {
+                <!-- Student Menu -->
+                <div class="menu-section">
+                    <div class="menu-section-title">Student</div>
+                </div>
+
+                <a class="menu-item @(IsActive("Course", "Browse") ? "active" : "")"
+                   asp-controller="Course" asp-action="Browse">
+                    <i class="bi bi-book"></i>
+                    <span>Browse Courses</span>
+                </a>
+
+                <a class="menu-item @(IsActive("Enrollment") ? "active" : "")"
+                   asp-controller="Enrollment" asp-action="Index">
+                    <i class="bi bi-card-checklist"></i>
+                    <span>My Enrollments</span>
+                </a>
+
+                <a class="menu-item @(IsActive("Prospectus") ? "active" : "")"
+                   asp-controller="Prospectus" asp-action="Index">
+                    <i class="bi bi-journal-text"></i>
+                    <span>My Prospectus</span>
+                </a>
+
+                <a class="menu-item @(IsActive("StudentAccount") ? "active" : "")"
+                   asp-controller="StudentAccount" asp-action="Index">
+                    <i class="bi bi-wallet2"></i>
+                    <span>My Account</span>
+                    @{
+                        // TODO: Add badge for pending payments if needed
+                    }
+                </a>
+            }
+
+            @if (User.IsInRole("Cashier") || User.IsInRole("Admin"))
+            {
+                <!-- Cashier Menu -->
+                <div class="menu-section">
+                    <div class="menu-section-title">Cashier</div>
+                </div>
+
+                <div class="menu-item has-submenu @(IsControllerActive("Cashier") ? "active" : "")"
+                     data-submenu="cashier">
+                    <div class="menu-item-content">
+                        <i class="bi bi-cash-coin"></i>
+                        <span>Cashier</span>
+                        <i class="bi bi-chevron-down submenu-icon"></i>
+                    </div>
+                </div>
+                <div class="submenu @(IsControllerActive("Cashier") ? "show" : "")" id="submenu-cashier">
+                    <a class="submenu-item @(IsActive("Cashier", "Index") ? "active" : "")"
+                       asp-controller="Cashier" asp-action="Index">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Cashier", "ProcessPayment") ? "active" : "")"
+                       asp-controller="Cashier" asp-action="ProcessPayment">
+                        <i class="bi bi-cash"></i>
+                        <span>Process Payment</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Cashier", "PaymentHistory") ? "active" : "")"
+                       asp-controller="Cashier" asp-action="PaymentHistory">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Payment History</span>
+                    </a>
+                </div>
+            }
+
+            @if (User.IsInRole("CampusDirector") || User.IsInRole("Admin"))
+            {
+                <!-- Campus Director Menu -->
+                <div class="menu-section">
+                    <div class="menu-section-title">Campus Director</div>
+                </div>
+
+                <a class="menu-item @(IsActive("PromissoryNote") ? "active" : "")"
+                   asp-controller="PromissoryNote" asp-action="PendingReview">
+                    <i class="bi bi-file-earmark-check"></i>
+                    <span>Promissory Notes</span>
+                </a>
+            }
+
+            @if (User.IsInRole("Dean") || User.IsInRole("Accounting") || User.IsInRole("SAO") || User.IsInRole("Library") || User.IsInRole("Records"))
+            {
+                <!-- Approvals Menu -->
+                <div class="menu-section">
+                    <div class="menu-section-title">Approvals</div>
+                </div>
+
+                <div class="menu-item has-submenu @(IsActive("Dashboard", "PendingApprovals") || IsActive("Dashboard", "ApprovalHistory") ? "active" : "")"
+                     data-submenu="approvals">
+                    <div class="menu-item-content">
+                        <i class="bi bi-clipboard-check"></i>
+                        <span>Approvals</span>
+                        <i class="bi bi-chevron-down submenu-icon"></i>
+                    </div>
+                </div>
+                <div class="submenu @(IsActive("Dashboard", "PendingApprovals") || IsActive("Dashboard", "ApprovalHistory") ? "show" : "")" id="submenu-approvals">
+                    <a class="submenu-item @(IsActive("Dashboard", "PendingApprovals") ? "active" : "")"
+                       asp-controller="Dashboard" asp-action="PendingApprovals">
+                        <i class="bi bi-hourglass-split"></i>
+                        <span>Pending Approvals</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Dashboard", "ApprovalHistory") ? "active" : "")"
+                       asp-controller="Dashboard" asp-action="ApprovalHistory">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Approval History</span>
+                    </a>
+                </div>
+            }
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Dean"))
+            {
+                <!-- Admin Menu -->
+                <div class="menu-section">
+                    <div class="menu-section-title">Administration</div>
+                </div>
+
+                <div class="menu-item has-submenu @(IsControllerActive("Course", "Admin", "AcademicYear") ? "active" : "")"
+                     data-submenu="admin">
+                    <div class="menu-item-content">
+                        <i class="bi bi-gear"></i>
+                        <span>Admin</span>
+                        <i class="bi bi-chevron-down submenu-icon"></i>
+                    </div>
+                </div>
+                <div class="submenu @(IsControllerActive("Course", "Admin", "AcademicYear") ? "show" : "")" id="submenu-admin">
+                    <a class="submenu-item @(IsActive("Course", "Index") ? "active" : "")"
+                       asp-controller="Course" asp-action="Index">
+                        <i class="bi bi-book"></i>
+                        <span>Manage Courses</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Admin", "ManagePrograms") ? "active" : "")"
+                       asp-controller="Admin" asp-action="ManagePrograms">
+                        <i class="bi bi-journal-code"></i>
+                        <span>Manage Programs</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Admin", "ManageCourses") ? "active" : "")"
+                       asp-controller="Admin" asp-action="ManageCourses">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Grade Students</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Admin", "ManageStudents") ? "active" : "")"
+                       asp-controller="Admin" asp-action="ManageStudents">
+                        <i class="bi bi-person-badge"></i>
+                        <span>Manage Students</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Admin", "PendingRegistrations") ? "active" : "")"
+                       asp-controller="Admin" asp-action="PendingRegistrations">
+                        <i class="bi bi-person-plus"></i>
+                        <span>Pending Registrations</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("Admin", "ManageDepartments") ? "active" : "")"
+                       asp-controller="Admin" asp-action="ManageDepartments">
+                        <i class="bi bi-building"></i>
+                        <span>Manage Departments</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("AcademicYear", "Index") ? "active" : "")"
+                       asp-controller="AcademicYear" asp-action="Index">
+                        <i class="bi bi-calendar-range"></i>
+                        <span>Academic Years</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("EnrollmentPeriods", "Index") ? "active" : "")"
+                       asp-controller="EnrollmentPeriods" asp-action="Index">
+                        <i class="bi bi-calendar-check"></i>
+                        <span>Enrollment Periods</span>
+                    </a>
+                    <a class="submenu-item @(IsActive("QuarterPeriods", "Index") ? "active" : "")"
+                       asp-controller="QuarterPeriods" asp-action="Index">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Quarter Periods</span>
+                    </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="submenu-divider"></div>
+                        <a class="submenu-item @(IsActive("Admin", "Users") ? "active" : "")"
+                           asp-controller="Admin" asp-action="Users">
+                            <i class="bi bi-people"></i>
+                            <span>Manage Users</span>
+                        </a>
+                    }
+                </div>
+            }
+        </nav>
+
+        <div class="sidebar-footer">
+            <form class="logout-form" asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit" class="menu-item logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <!-- Not authenticated -->
+        <nav class="sidebar-menu">
+            <a class="menu-item @(IsActive("Home", "Index") ? "active" : "")"
+               asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house-door"></i>
+                <span>Home</span>
+            </a>
+            <a class="menu-item @(IsActive("Account", "Login") ? "active" : "")"
+               asp-controller="Account" asp-action="Login">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span>Login</span>
+            </a>
+            <a class="menu-item @(IsActive("Account", "Register") ? "active" : "")"
+               asp-controller="Account" asp-action="Register">
+                <i class="bi bi-person-plus"></i>
+                <span>Register</span>
+            </a>
+        </nav>
+    }
+</div>
+
+<!-- Sidebar overlay for mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>

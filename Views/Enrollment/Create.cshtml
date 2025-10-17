@@ -47,6 +47,16 @@
             <i class="bi bi-info-circle"></i> <strong>Bulk Enrollment:</strong> Select multiple courses to enroll in all at once. The Dean will review your entire enrollment batch together.
         </div>
 
+        <div class="alert alert-warning">
+            <h5><i class="bi bi-exclamation-circle"></i> Important Reminders</h5>
+            <ul class="mb-0">
+                <li><strong>Enrollment Deadlines:</strong> Make sure you enroll within the active enrollment period.</li>
+                <li><strong>Quarter Payments:</strong> You must pay at least 30% of your total balance for the current quarter before enrolling.
+                    <a asp-controller="StudentAccount" asp-action="QuarterPayments" class="alert-link">Check your quarter payment status</a></li>
+                <li>If you cannot pay, you can <a asp-controller="PromissoryNote" asp-action="Submit" class="alert-link">request a promissory note</a> from the Campus Director.</li>
+            </ul>
+        </div>
+
         <form asp-action="Create" method="post" id="enrollmentForm">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 

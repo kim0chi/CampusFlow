@@ -1,0 +1,193 @@
+@model IEnumerable<StudentEnrollmentSystem.Models.QuarterPaymentRequirement>
+
+@{
+    ViewData["Title"] = "Quarter Payment Requirements";
+    var currentQuarter = ViewBag.CurrentQuarter as StudentEnrollmentSystem.Models.QuarterPeriod;
+    var totalBalance = (decimal)ViewBag.TotalBalance;
+}
+
+<div class="container mt-4">
+    <h2>Quarter Payment Requirements</h2>
+    <p class="text-muted">Track your quarterly payment status</p>
+    <hr />
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Accumulated Balance</h5>
+                    <h2 class="text-danger">₱@totalBalance.ToString("N2")</h2>
+                    <p class="text-muted mb-0">Balance across all semesters</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Current Quarter Requirement</h5>
+                    @if (currentQuarter != null)
+                    {
+                        var currentReq = Model.FirstOrDefault(r => r.QuarterPeriodId == currentQuarter.Id);
+                        if (currentReq != null)
+                        {
+                            <h2 class="@(currentReq.MeetsRequirement ? "text-success" : "text-warning")">
+                                ₱@currentReq.RequiredPaymentAmount.ToString("N2")
+                            </h2>
+                            <p class="mb-0">
+                                <span class="badge bg-@(currentReq.MeetsRequirement ? "success" : "warning")">
+                                    @(currentReq.MeetsRequirement ? "Met" : "Pending")
+                                </span>
+                                <strong>@currentQuarter.Quarter</strong> - Due @currentQuarter.PaymentDeadline.ToString("MMM dd, yyyy")
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No requirement for current quarter yet</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">No active quarter period</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <strong>About Quarter Payments:</strong> You must pay at least <strong>30% of your total balance</strong> each quarter.
+        If you cannot pay, you can request a promissory note from the Campus Director.
+        Failing to meet the requirement will prevent you from enrolling in courses.
+    </div>
+
+    @if (currentQuarter != null)
+    {
+        var currentReq = Model.FirstOrDefault(r => r.QuarterPeriodId == currentQuarter.Id);
+        if (currentReq != null && !currentReq.MeetsRequirement)
+        {
+            <div class="alert alert-warning">
+                <h5><i class="bi bi-exclamation-triangle"></i> Action Required</h5>
+                <p class="mb-2">
+                    You have a pending payment requirement for the current quarter (<strong>@currentQuarter.Quarter</strong>).
+                    You must pay at least <strong>₱@currentReq.RequiredPaymentAmount.ToString("N2")</strong> by <strong>@currentQuarter.PaymentDeadline.ToString("MMMM dd, yyyy")</strong>.
+                </p>
+                <div class="d-flex gap-2">
+                    <a asp-controller="StudentAccount" asp-action="MakePayment" class="btn btn-success">
+                        <i class="bi bi-credit-card"></i> Make Payment
+                    </a>
+                    <a asp-controller="PromissoryNote" asp-action="Submit" class="btn btn-outline-primary">
+                        <i class="bi bi-file-text"></i> Request Promissory Note
+                    </a>
+                </div>
+            </div>
+        }
+    }
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Quarter Payment History</h5>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-check" style="font-size: 3rem; color: #6c757d;"></i>
+                    <p class="mt-3 text-muted">No quarter payment requirements yet.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Quarter</th>
+                                <th>Semester</th>
+                                <th>Academic Year</th>
+                                <th>Balance at Start</th>
+                                <th>Required (30%)</th>
+                                <th>Paid</th>
+                                <th>Status</th>
+                                <th>Payment Deadline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var req in Model)
+                            {
+                                var isPastDue = req.QuarterPeriod.PaymentDeadline < DateTime.UtcNow && !req.MeetsRequirement;
+
+                                <tr class="@(req.MeetsRequirement ? "" : isPastDue ? "table-danger" : "table-warning")">
+                                    <td>
+                                        <span class="badge bg-primary">@req.QuarterPeriod.Quarter</span>
+                                        @if (req.QuarterPeriod.Id == currentQuarter?.Id)
+                                        {
+                                            <span class="badge bg-info ms-1">Current</span>
+                                        }
+                                    </td>
+                                    <td>@req.QuarterPeriod.Semester</td>
+                                    <td>@req.QuarterPeriod.AcademicYear</td>
+                                    <td>₱@req.TotalBalanceAtQuarterStart.ToString("N2")</td>
+                                    <td><strong>₱@req.RequiredPaymentAmount.ToString("N2")</strong></td>
+                                    <td>
+                                        ₱@req.ActualPaymentAmount.ToString("N2")
+                                        @if (req.ActualPaymentAmount > 0)
+                                        {
+                                            var percentage = (req.ActualPaymentAmount / req.TotalBalanceAtQuarterStart * 100);
+                                            <br /><small class="text-muted">(@percentage.ToString("F1")%)</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (req.MeetsRequirement)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Met
+                                            </span>
+                                            @if (req.HasPromissoryNote)
+                                            {
+                                                <br /><span class="badge bg-info mt-1">Via Promissory Note</span>
+                                            }
+                                        }
+                                        else if (isPastDue)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-exclamation-triangle"></i> Overdue
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i> Pending
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @req.QuarterPeriod.PaymentDeadline.ToString("MMM dd, yyyy")
+                                        @if (isPastDue)
+                                        {
+                                            <br /><span class="text-danger small">Past Due</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Account
+        </a>
+    </div>
+</div>

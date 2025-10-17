@@ -55,6 +55,19 @@ public class StudentAccountService : IStudentAccountService
         return account.CurrentBalance;
     }
 
+    public async Task<decimal> GetStudentTotalBalanceAsync(string studentId)
+    {
+        // Get all student accounts across all semesters
+        var accounts = await _context.StudentAccounts
+            .Where(sa => sa.StudentId == studentId)
+            .ToListAsync();
+
+        // Sum up all balances (accumulated debt from all semesters)
+        decimal totalBalance = accounts.Sum(a => a.CurrentBalance);
+
+        return totalBalance;
+    }
+
     public async Task<decimal> CalculatePaymentPercentageAsync(decimal amountPaid, decimal balance)
     {
         if (balance <= 0)
